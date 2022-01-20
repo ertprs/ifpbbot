@@ -9,6 +9,10 @@ const { Buttons, Contact, MessageMedia } = require('whatsapp-web.js')
 
 // RETORNA A RESPOSTA DO DIALOGFLOW
 async function getDFMessage(text, from, client) {
+	SESSIONS_DATA.totalMsgCount = SESSIONS_DATA.totalMsgCount || 0
+	process.title = 'Mensagem recebida'
+	setTimeout(() => process.title = `IFPB ChatBot (${++SESSIONS_DATA.totalMsgCount})`, 100)
+
 	const sessionClient = new dialogflow.SessionsClient({
 		credentials: CREDENTIALS
 	})
@@ -55,7 +59,8 @@ async function getDFMessage(text, from, client) {
 		}
 	}).flat()
 
-	console.log(JSON.stringify(responses, null, '  '))
+	if (process.env.NODE_ENV === 'development')
+		console.log(JSON.stringify(responses, null, '  '))
 
 	for (const i in responses) {
 		const msg = responses[i]

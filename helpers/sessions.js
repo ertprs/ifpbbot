@@ -1,7 +1,7 @@
 const fs = require('fs')
 
 class Session {
-	constructor(fileName, data, saveTime = 60000) {
+	constructor(fileName, data, saveTime = 10000) {
 		this.data = data || {}
 		this.fileName = fileName
 		if (fileName) this.load()

@@ -1,4 +1,5 @@
-module.exports = function (text, reviver, defaultValue = {}) {
+module.exports = function (text, reviver, defaultValue = {}, noDefaultValue = false) {
+	if (noDefaultValue) defaultValue = undefined
 	if (typeof text === 'object' && text !== null) {
 		return text || defaultValue
 	} else {
