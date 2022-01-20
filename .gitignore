@@ -1,2 +1,5 @@
 node_modules
 .env
+tokens
+sessions.json
+wa-session.json

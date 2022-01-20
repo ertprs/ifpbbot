@@ -4,15 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@google-cloud/dialogflow": "^4.6.0",
-    "dotenv": "^12.0.4",
+    "chrome-launcher": "^0.15.0",
+    "dotenv": "^14.2.0",
     "pb-util": "^1.0.3",
-    "venom-bot": "^4.0.5"
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.15.3"
   }
 }
