@@ -14,7 +14,7 @@ class Session {
 
 			const data = fs.readFileSync(fileName, { encoding: 'UTF-8' })
 			const result = JSON.parse(data)
-			
+
 			if (typeof result === 'object' && result !== null && !Array.isArray(result)) {
 				this.data = result
 				return result

@@ -121,9 +121,9 @@ function parseResponse(msg, client) {
 // ATUALIZA OS CONTEXTOS
 async function setContexts(contexts = [], sessionPath) {
 	if (contexts.length <= 0) return
-		const contextClient = new dialogflow.ContextsClient({
-			credentials: CREDENTIALS
-		})
+	const contextClient = new dialogflow.ContextsClient({
+		credentials: CREDENTIALS
+	})
 
 	for (const context of contexts) {
 		await contextClient.createContext({

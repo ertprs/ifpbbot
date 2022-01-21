@@ -8,6 +8,7 @@ const ChromeLauncher = require('chrome-launcher')
 const chromePath = ChromeLauncher.Launcher.getInstallations()[0]
 const jsonParse = require('./helpers/json-parse')
 const printLogo = require('./helpers/print-logo')
+const makeBox = require('./helpers/makebox')
 const getDFMessage = require('./get-df-message')
 
 
@@ -20,38 +21,44 @@ const client = new Client({
 })
 
 
+console.log(makeBox('Conectando, aguarde...', chalk.yellowBright, chalk.yellow, { before: ' ' }))
 printLogo()
-console.log(chalk.yellow('Conectando, aguarde...'))
 process.title = 'Conectando...'
 
 // Quando conectar, salva a sessão no arquivo
 client.on('authenticated', (session) => {
-	fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), () => {})
+	fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), () => { })
 })
 
 // Falha na autenticação
 client.on('auth_failure', (session) => {
-	console.log(chalk.red('Falha ao autenticar no WhatsApp'))
+	console.clear()
+	console.log(makeBox('Falha na autenticação do WhatsApp', chalk.redBright, chalk.red, { before: ' ' }))
+	printLogo()
+	process.title = 'Falha na autenticação'
 })
 
 // Desconectado
 client.on('disconnected', (session) => {
-	console.log(chalk.red('Desconectado'))
+	console.clear()
+	console.log(makeBox('Desconectado', chalk.redBright, chalk.red, { before: ' ' }))
+	printLogo()
+	process.title = 'Desconectado'
 })
 
 // Imprime o QR Code
 client.on('qr', (qr) => {
 	console.clear()
 	process.title = 'Aguardando autenticação...'
-	console.log(chalk.cyanBright('Escaneie o QR Code no seu WhatsApp\n'))
+	console.log(makeBox('Escaneie o QR Code no seu WhatsApp', chalk.cyanBright, chalk.cyan, { before: ' ' }))
 	qrcode.generate(qr, { small: true })
 })
 
 // Conectado
 client.on('ready', () => {
 	console.clear()
+	console.log(makeBox('Conectado!', chalk.greenBright, chalk.green, { before: ' ' }))
 	printLogo()
-	console.log(chalk.green('Conectado!'))
 	process.title = `IFPB ChatBot`
 })
 
@@ -80,7 +87,7 @@ client.on('message', async (msg) => {
 		console.error(err)
 		await client.sendMessage(msg.from, 'Ops! Ocorreu um problema técnico, peço desculpas').catch(console.error)
 	}
-	
+
 	// Desativa o estado "Digitando..."
 	chat.then(c => c.clearState())
 })
