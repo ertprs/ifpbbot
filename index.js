@@ -18,5 +18,5 @@ if (!process.env.PROJECT_ID) {
 }
 
 // Inicia os robôs
-// require('./whatsapp')
-require('./telegram')
+if (!process.env.DISABLE_WHATSAPP) require('./whatsapp')
+if (!process.env.DISABLE_TELEGRAM) require('./telegram')
