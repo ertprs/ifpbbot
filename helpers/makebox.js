@@ -4,9 +4,9 @@
  * @param {function} [textTransformFn] - Função para transformar texto (por exemplo: colorir texto)
  * @param {function} [borderTransformFn] - Função para transformar borda (por exemplo: colorir borda)
  * @param {Object} [options] - Opções para construção da caixa
- * @param {boolean} [options.thin] - Usar linhas finas para contrução da caixa
- * @param {boolean} [options.center] - Centralizar texto dentro da caixa
- * @param {string} [options.before] - String antes de cada linha da caixa (por exemplo: espaços)
+ * @param {boolean} [options.thin=false] - Usar linhas finas para contrução da caixa
+ * @param {boolean} [options.center=false] - Centralizar texto dentro da caixa
+ * @param {string} [options.before=' '] - String antes de cada linha da caixa (por exemplo: espaços)
  * @returns {string} Texto dentro da caixa
  */
 module.exports = function (
@@ -17,7 +17,7 @@ module.exports = function (
 ) {
 	const thin = options.thin || false
 	const center = options.center || false
-	const before = options.before || ''
+	const before = options.before || ' '
 
 	// Caracteres da caixa
 	const BOX_CHARS_THIN = ['─', '│', '┌', '┐', '└', '┘']

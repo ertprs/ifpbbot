@@ -1,6 +1,6 @@
 const fs = require('fs')
 
-class Session {
+class LocalSessions {
 	constructor(fileName, data, saveTime = 10000) {
 		this.data = data || {}
 		this.fileName = fileName
@@ -31,6 +31,14 @@ class Session {
 			if (err) console.error('Ocorreu um erro ao salvar sessão\n', err)
 		})
 	}
+
+	getSession(name) {
+		return this.data[name]
+	}
+
+	setSession(name, value) {
+		return this.data[name] = value
+	}
 }
 
-module.exports = Session
+module.exports = LocalSessions

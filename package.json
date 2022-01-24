@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "npx cross-env NODE_ENV=development node index.js"
+    "dev": "npx cross-env NODE_ENV=development node index.js",
+    "whatsapp": "node whatsapp",
+    "telegram": "node telegram"
   },
   "keywords": [],
   "author": "",
@@ -15,8 +17,14 @@
     "chalk": "^4.1.2",
     "chrome-launcher": "^0.15.0",
     "dotenv": "^14.2.0",
+    "module-alias": "^2.2.2",
     "pb-util": "^1.0.3",
     "qrcode-terminal": "^0.12.0",
+    "telegraf": "^4.6.0",
     "whatsapp-web.js": "^1.15.3"
-  }
+  },
+	"_moduleAliases": {
+		"@helpers": "helpers",
+		"@dialogflow": "dialogflow"
+	}
 }

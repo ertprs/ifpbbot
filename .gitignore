@@ -3,3 +3,4 @@ node_modules
 tokens
 sessions.json
 wa-session.json
+df-sessions.json
