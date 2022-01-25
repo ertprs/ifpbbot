@@ -63,6 +63,12 @@ client.on('message', async (msg) => {
 	// Ativa o estado "Digitando..."
 	chat.then(c => c.sendStateTyping())
 
+	if (msg.hasMedia) {
+		return await client
+			.sendMessage(msg.from, '🤷‍♂️ Desculpe, infelizmente não consigo entender áudios e outros arquivos')
+			.catch(console.error)
+	}
+
 	// Retorna a resposta do DialogFlow
 	getDFResponse(msg.body, msg.from, 'whatsapp')
 		.then((r) => parseMessages(r, client))

@@ -27,6 +27,11 @@ bot.on('text', async (ctx) => {
 		.then((r) => parseMessages(r, ctx))
 })
 
+// Mensagem de voz
+bot.on('voice', async (ctx) => {
+	ctx.replyWithMarkdown('🤷‍♂️ Desculpe, infelizmente não consigo entender áudios')
+})
+
 // Ação de botão
 bot.on('callback_query', async (ctx) => {
 	ctx.answerCbQuery()
