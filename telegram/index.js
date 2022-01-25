@@ -56,7 +56,7 @@ const {
 if ((whURL || (rSlug && rOwner)) && whPath) {
 	const webhookURL = whURL || `https://${rSlug}.${rOwner.toLowerCase()}.repl.co`
 	bot.telegram.setWebhook(webhookURL)
-	bot.startWebhook(whPath, null, 443)
+	bot.startWebhook(whPath, null, process.env.PORT || 443)
 	log('greenBright', 'Telegram')('Servidor Webhook aberto')
 }
 
