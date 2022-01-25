@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 const { Context, Markup } = require('telegraf')
+const log = require('@helpers/logger')
 
 /**
  * Retorna as respostas formatadas para a biblioteca telegraf
@@ -34,7 +35,7 @@ async function parseMessages(responses, ctx) {
 
 	// Printa as respostas
 	if (process.env.NODE_ENV === 'development') {
-		console.log(responses)
+		log('Telegram')(responses)
 	}
 
 	// Converte as respostas para o formato da biblioteca

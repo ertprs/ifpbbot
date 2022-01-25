@@ -1,4 +1,3 @@
-console.clear()
 require('dotenv/config')
 require('module-alias/register')
 const fs = require('fs')
@@ -8,6 +7,7 @@ const qrcode = require('qrcode-terminal')
 const { Client } = require('whatsapp-web.js')
 const ChromeLauncher = require('chrome-launcher')
 const chromePath = ChromeLauncher.Launcher.getInstallations()[0]
+const log = require('@helpers/logger')
 const makeBox = require('@helpers/makebox')
 const jsonParse = require('@helpers/json-parse')
 const printLogo = require('@helpers/print-logo')
@@ -23,9 +23,7 @@ const client = new Client({
 	puppeteer: { executablePath: chromePath }
 })
 
-console.log(makeBox('Conectando, aguarde...', chalk.yellowBright, chalk.yellow))
-printLogo()
-process.title = 'Conectando...'
+log('yellowBright', 'WhatsApp')('Conectando, aguarde...')
 
 // Quando conectar, salva a sessão no arquivo
 client.on('authenticated', (session) => {
@@ -34,34 +32,23 @@ client.on('authenticated', (session) => {
 
 // Falha na autenticação
 client.on('auth_failure', () => {
-	console.clear()
-	console.log(makeBox('Falha na autenticação do WhatsApp', chalk.redBright, chalk.red))
-	printLogo()
-	process.title = 'Falha na autenticação'
+	log('redBright', 'WhatsApp')('Falha na autenticação')
 })
 
 // Desconectado
 client.on('disconnected', () => {
-	console.clear()
-	console.log(makeBox('Desconectado', chalk.redBright, chalk.red))
-	printLogo()
-	process.title = 'Desconectado'
+	log('redBright', 'WhatsApp')('Desconectado')
 })
 
 // Imprime o QR Code
 client.on('qr', (qr) => {
-	console.clear()
-	process.title = 'Aguardando autenticação...'
-	console.log(makeBox('Escaneie o QR Code no seu WhatsApp', chalk.cyanBright, chalk.cyan))
+	log('cyanBright', 'WhatsApp')('Escaneie o QR Code no seu WhatsApp\n')
 	qrcode.generate(qr, { small: true })
 })
 
 // Conectado
 client.on('ready', () => {
-	console.clear()
-	console.log(makeBox('Conectado!', chalk.greenBright, chalk.green))
-	printLogo()
-	process.title = 'IFPB ChatBot'
+	log('greenBright', 'WhatsApp')('Servidor aberto')
 })
 
 // Nova mensagem

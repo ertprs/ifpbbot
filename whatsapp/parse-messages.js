@@ -1,4 +1,5 @@
 const { Buttons, MessageMedia } = require('whatsapp-web.js')
+const log = require('@helpers/logger')
 
 /**
  * Retorna as respostas formatadas para a biblioteca whatsapp-web.js
@@ -34,7 +35,7 @@ function parseMessages(responses, client) {
 
 	// Printa as respostas
 	if (process.env.NODE_ENV === 'development') {
-		console.log(responses)
+		log('WhatsApp')(responses)
 	}
 
 	// Converte as respostas para o formato da biblioteca
