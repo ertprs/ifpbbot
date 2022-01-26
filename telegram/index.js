@@ -35,7 +35,7 @@ bot.on('voice', async (ctx) => {
 // Ação de botão
 bot.on('callback_query', async (ctx) => {
 	ctx.answerCbQuery()
-	ctx.replyWithMarkdown(`💬 *[${ctx.update.callback_query.data}]*`)
+	ctx.replyWithMarkdown(`💬 *${ctx.update.callback_query.data}*`)
 	getDFResponse(ctx.update.callback_query.data, ctx.update.callback_query.message.chat.id, 'telegram')
 		.then((r) => parseMessages(r, ctx))
 })

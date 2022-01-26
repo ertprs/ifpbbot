@@ -52,15 +52,17 @@ async function parseMessages(responses, ctx) {
  * @param {Context} ctx - Contexto da biblioteca
  */
 async function parseResponse(msg, ctx) {
+	const forceReply = ctx.chat.type === 'supergroup' ? { force_reply: true } : {}
+	const replyMarkup = ctx.chat.type === 'supergroup' ? { reply_markup: { ...forceReply } } : undefined
+
 	switch (msg.type) {
 		case 'text':
-			// if (msg.text) await ctx.replyWithMarkdown(msg.text, Markup.removeKeyboard())
-			if (msg.text) await ctx.replyWithMarkdown(msg.text)
+			if (msg.text) await ctx.replyWithMarkdown(msg.text, replyMarkup)
 			break
 		case 'chips':
-			// await ctx.reply(msg.prompt, Markup.keyboard(msg.options.map(opt => opt.text)).oneTime().resize())
 			await ctx.replyWithMarkdown(msg.prompt || '', {
 				reply_markup: {
+					...forceReply,
 					inline_keyboard: msg.options.map(opt => [{
 						text: opt.text, callback_data: opt.text
 					}])
@@ -68,16 +70,16 @@ async function parseResponse(msg, ctx) {
 			})
 			break
 		case 'image':
-			await ctx.replyWithPhoto(msg.rawUrl)
+			await ctx.replyWithPhoto(msg.rawUrl, replyMarkup)
 			break
 		case 'file':
-			await ctx.replyWithDocument(msg.url)
+			await ctx.replyWithDocument(msg.url, replyMarkup)
 			break
 		case 'contact':
-			await ctx.replyWithContact(msg.number, msg.name)
+			await ctx.replyWithContact(msg.number, msg.name, replyMarkup)
 			break
 		case 'accordion':
-			await ctx.replyWithMarkdown(`*${msg.title}*\n────────────────────\n${msg.text}`)
+			await ctx.replyWithMarkdown(`*${msg.title}*\n────────────────────\n${msg.text}`, replyMarkup)
 			break
 		default:
 			break
