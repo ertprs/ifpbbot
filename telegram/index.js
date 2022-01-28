@@ -41,9 +41,11 @@ bot.on('callback_query', async (ctx) => {
 })
 
 // Inicia o servidor
-bot.launch().then(() => {
-	log('greenBright', 'Telegram')('Servidor aberto')
-})
+function start() {
+	return bot.launch().then(() => {
+		log('greenBright', 'Telegram')('Servidor aberto')
+	})
+}
 
 // Servidor Webhook
 const {
@@ -54,14 +56,12 @@ const {
 } = process.env
 
 if ((whURL || (rSlug && rOwner)) && whPath) {
-	console.log('whURL:', whURL)
-	console.log('rSlug:', rSlug)
-	console.log('rOwner:', rOwner)
-	console.log('whPath:', whPath)
-	const webhookURL = whURL || `https://${rSlug}.${rOwner.toLowerCase()}.repl.co`
-	// bot.telegram.setWebhook(webhookURL)
+	const webhookURL = (whURL || `https://${rSlug}.${rOwner.toLowerCase()}.repl.co`) + (whPath || '/')
+	bot.telegram.setWebhook(webhookURL).then((s) => !s && start())
 	bot.startWebhook(whPath, null, process.env.PORT || 443)
 	log('greenBright', 'Telegram')('Servidor Webhook aberto')
+} else {
+	start()
 }
 
 module.exports = bot
