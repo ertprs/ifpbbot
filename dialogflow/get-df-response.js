@@ -1,4 +1,5 @@
 const path = require('path')
+const collect = require('@helpers/collect')
 const jsonParse = require('@helpers/json-parse')
 const dialogflow = require('@google-cloud/dialogflow')
 const { value } = require('pb-util')
@@ -13,11 +14,11 @@ const CREDENTIALS = jsonParse(process.env.GCLOUD_CREDENTIALS)
  * @async
  * @param {string} text - Texto da mensagem recebida
  * @param {string} from - ID único do chat ou contato da mensagem recebida
- * @param {string} [sessionIDPrefix=''] - Prefixo para o ID de sessão usado para diferenciar plataformas (exemplo: 'whatsapp')
+ * @param {string} [platform=''] - Prefixo para o ID de sessão usado para diferenciar plataformas (exemplo: 'whatsapp')
  * @returns {Promise<{ responses: object[] }>} Retorna as respostas do Dialogflow
  */
-async function getDFResponse(text, from, sessionIDPrefix = '') {
-	from = sessionIDPrefix + from
+async function getDFResponse(text, from, platform = '') {
+	from = platform + from
 
 	// Cria ou retoma as sessões remotas
 	const sessionClient = new dialogflow.SessionsClient({
@@ -68,6 +69,9 @@ async function getDFResponse(text, from, sessionIDPrefix = '') {
 			return value.decode(msg.payload.fields.richContent)[0]
 		}
 	}).flat()
+
+	// Coletar dados
+	collect(text, from, responses, platform)
 
 	// Retorna as respostas do Dialogflow
 	return responses
