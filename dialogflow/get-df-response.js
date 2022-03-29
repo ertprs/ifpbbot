@@ -1,5 +1,4 @@
 const path = require('path')
-const collect = require('@helpers/collect')
 const jsonParse = require('@helpers/json-parse')
 const dialogflow = require('@google-cloud/dialogflow')
 const { value } = require('pb-util')
@@ -69,9 +68,6 @@ async function getDFResponse(text, from, platform = '') {
 			return value.decode(msg.payload.fields.richContent)[0]
 		}
 	}).flat()
-
-	// Coletar dados
-	collect(text, from, responses, platform)
 
 	// Retorna as respostas do Dialogflow
 	return responses
