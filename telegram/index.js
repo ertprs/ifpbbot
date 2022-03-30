@@ -56,9 +56,11 @@ const {
 } = process.env
 
 if ((whURL || (rSlug && rOwner)) && whPath) {
+	const app = require('@helpers/http')
 	const webhookURL = (whURL || `https://${rSlug}.${rOwner.toLowerCase()}.repl.co`) + (whPath || '/')
 	bot.telegram.setWebhook(webhookURL).then((s) => !s && start())
-	bot.startWebhook(whPath, null, process.env.PORT || 443)
+	app.use(bot.webhookCallback(whPath))
+	// bot.startWebhook(whPath, null, process.env.PORT || 443)
 	log('greenBright', 'Telegram')('Servidor Webhook aberto')
 } else {
 	start()

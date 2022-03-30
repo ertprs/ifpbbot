@@ -3,17 +3,19 @@ require('module-alias/register')
 const getDisciplinas = require('./intents/getDisciplinas')
 const getProfessores = require('./intents/getProfessores')
 const log = require('@helpers/logger')
+const app = require('@helpers/http')
 const express = require('express')
 const basicAuth = require('express-basic-auth')
-const app = express()
-app.use(express.json())
+const router = express.Router()
 
-if (process.env.WEBHOOK_USERS) app.use(basicAuth({
+router.use(express.json())
+
+if (process.env.WEBHOOK_USERS) router.use(basicAuth({
 	users: JSON.parse(process.env.WEBHOOK_USERS || '{}'),
 	unauthorizedResponse: () => 'Você não tem autorização para utilizar este servidor Webhook'
 }))
 
-app.post('/webhook', async (req, res) => {
+router.post('/', async (req, res) => {
 	switch (req.body.queryResult.intent.displayName) {
 		case 'disciplinas.qual_disciplina_do_professor': {
 			const resposta = await getDisciplinas(req.body.queryResult.parameters.professor)
@@ -39,8 +41,7 @@ app.post('/webhook', async (req, res) => {
 	}
 })
 
-app.listen(process.env.PORT || 3000, () => {
-	log('greenBright', 'Webhook')('Servidor aberto')
-})
+app.use('/webhook', router)
+log('greenBright', 'Webhook')('Servidor aberto')
 
-module.exports = app
+module.exports = router
