@@ -10,7 +10,7 @@ Faz a integração do Dialogflow com o WhatsApp e Telegram
 # 🌐 Site
 Você pode acessar o chatbot diretamente pelo site:
 
-[Clique aqui para acessar](https://ifpbchatbot.jeffersondantas.repl.co/)
+[Clique aqui para acessar](http://ifpbpicuibot.herokuapp.com/)
 
 <br>
 
@@ -34,7 +34,7 @@ npm install
 # 🔧 Configuração
 
 ## ❌ Desabilitar uma plataforma
-Caso você queira desativar alguma plataforma, como o WhatsApp ou Telegram, você deve definir a variável de ambiente `DISABLE_WHATSAPP`, `DISABLE_TELEGRAM` ou `DISABLE_WEBHOOK` como `1`
+Caso você queira desativar alguma plataforma, como o WhatsApp ou Telegram, você deve definir a variável de ambiente `DISABLE_WHATSAPP`, `DISABLE_TELEGRAM`, `DISABLE_WEBHOOK` ou `DISABLE_SITE` como `1`
 
 <br>
 

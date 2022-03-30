@@ -10,7 +10,8 @@ const {
 	PROJECT_ID,
 	DISABLE_WHATSAPP,
 	DISABLE_TELEGRAM,
-	DISABLE_WEBHOOK
+	DISABLE_WEBHOOK,
+	DISABLE_SITE
 } = process.env
 
 console.clear()
@@ -35,6 +36,7 @@ if (!PROJECT_ID) {
 if (isDisabled(DISABLE_WHATSAPP)) log('yellowBright', 'Aviso')('Robô do WhatsApp desativado por variável de ambiente')
 if (isDisabled(DISABLE_TELEGRAM)) log('yellowBright', 'Aviso')('Robô do Telegram desativado por variável de ambiente')
 if (isDisabled(DISABLE_WEBHOOK)) log('yellowBright', 'Aviso')('Servidor webhook desativado por variável de ambiente')
+if (isDisabled(DISABLE_SITE)) log('yellowBright', 'Aviso')('Site desativado por variável de ambiente')
 
 if (error) process.exit()
 
@@ -42,6 +44,7 @@ if (error) process.exit()
 if (!isDisabled(DISABLE_WHATSAPP)) require('./whatsapp')
 if (!isDisabled(DISABLE_TELEGRAM)) require('./telegram')
 if (!isDisabled(DISABLE_WEBHOOK)) require('./webhook')
+if (!isDisabled(DISABLE_SITE)) require('./site')
 
 // Retorna false se a string indica que não é para desabilitar
 function isDisabled(string) {

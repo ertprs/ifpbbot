@@ -7,7 +7,6 @@ const app = require('@helpers/http')
 const express = require('express')
 const basicAuth = require('express-basic-auth')
 const router = express.Router()
-
 router.use(express.json())
 
 if (process.env.WEBHOOK_USERS) router.use(basicAuth({

@@ -1,0 +1,22 @@
+df-messenger {
+	--df-messenger-bot-message: #888888;
+	--df-messenger-button-titlebar-color: #2F9E41;
+	--df-messenger-chat-background-color: #F1F1F1;
+	--df-messenger-font-color: white;
+	--df-messenger-send-icon: #2F9E41;
+	--df-messenger-user-message: #2F9E41;
+}
+
+/*
+df-messenger-bot-message	Cor de segundo plano do balão para mensagens do agente.
+df-messenger-button-titlebar-color	Cor do botão flutuante e da barra de título da caixa de diálogo do chat.
+df-messenger-button-titlebar-font-color	Cor da fonte do título na barra de título.
+df-messenger-chat-background-color	Cor do segundo plano da caixa de diálogo de chat.
+df-messenger-font-color	Cor da fonte para mensagens.
+df-messenger-input-box-color	Cor do segundo plano da caixa de entrada de texto.
+df-messenger-input-font-color	Cor da fonte da caixa de entrada de texto.
+df-messenger-input-placeholder-font-color	Cor da fonte do texto do marcador na caixa de entrada de texto.
+df-messenger-minimized-chat-close-icon-color	Cor do ícone de fechamento na visualização de chat fechada.
+df-messenger-send-icon	Cor do ícone de envio na caixa de entrada de texto.
+df-messenger-user-message	Cor do segundo plano do balão para mensagens do usuário.
+*/
