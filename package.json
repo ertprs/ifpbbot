@@ -1,16 +1,17 @@
 {
   "name": "ifpbbot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Servidor para chatbot com Dialogflow integrado ao WhatsApp e Telegram",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "npx cross-env NODE_ENV=development node index.js",
     "whatsapp": "node whatsapp",
-    "telegram": "node telegram"
+    "telegram": "node telegram",
+    "webhook": "node webhook"
   },
   "keywords": [],
-  "author": "",
+  "author": "Jefferson Dantas",
   "license": "ISC",
   "dependencies": {
     "@google-cloud/dialogflow": "^4.6.0",
@@ -18,15 +19,20 @@
     "chalk": "^4.1.2",
     "chrome-launcher": "^0.15.0",
     "dotenv": "^14.2.0",
+    "express": "^4.17.3",
+    "express-basic-auth": "^1.2.1",
     "module-alias": "^2.2.2",
+    "mysql2": "^2.3.3",
     "pb-util": "^1.0.3",
     "qrcode-terminal": "^0.12.0",
+    "sequelize": "^6.17.0",
     "simple-encryptor": "^4.0.0",
     "telegraf": "^4.6.0",
     "whatsapp-web.js": "^1.15.3"
   },
   "_moduleAliases": {
     "@helpers": "helpers",
+    "@models": "models",
     "@dialogflow": "dialogflow"
   }
 }

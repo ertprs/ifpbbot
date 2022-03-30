@@ -9,7 +9,8 @@ const {
 	GCLOUD_CREDENTIALS,
 	PROJECT_ID,
 	DISABLE_WHATSAPP,
-	DISABLE_TELEGRAM
+	DISABLE_TELEGRAM,
+	DISABLE_WEBHOOK
 } = process.env
 
 console.clear()
@@ -33,12 +34,14 @@ if (!PROJECT_ID) {
 
 if (isDisabled(DISABLE_WHATSAPP)) log('yellowBright', 'Aviso')('Robô do WhatsApp desativado por variável de ambiente')
 if (isDisabled(DISABLE_TELEGRAM)) log('yellowBright', 'Aviso')('Robô do Telegram desativado por variável de ambiente')
+if (isDisabled(DISABLE_WEBHOOK)) log('yellowBright', 'Aviso')('Servidor webhook desativado por variável de ambiente')
 
 if (error) process.exit()
 
 // Inicia os robôs
 if (!isDisabled(DISABLE_WHATSAPP)) require('./whatsapp')
 if (!isDisabled(DISABLE_TELEGRAM)) require('./telegram')
+if (!isDisabled(DISABLE_WEBHOOK)) require('./webhook')
 
 // Retorna false se a string indica que não é para desabilitar
 function isDisabled(string) {

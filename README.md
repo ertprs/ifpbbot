@@ -5,6 +5,8 @@
 
 Faz a integração do Dialogflow com o WhatsApp e Telegram
 
+<br>
+
 # 🌐 Site
 Você pode acessar o chatbot diretamente pelo site:
 
@@ -32,8 +34,7 @@ npm install
 # 🔧 Configuração
 
 ## ❌ Desabilitar uma plataforma
-Caso você queira desativar alguma plataforma, como o WhatsApp ou Telegram, você deve definir a variável de ambiente `DISABLE_WHATSAPP`
-ou `DISABLE_TELEGRAM` como `1`
+Caso você queira desativar alguma plataforma, como o WhatsApp ou Telegram, você deve definir a variável de ambiente `DISABLE_WHATSAPP`, `DISABLE_TELEGRAM` ou `DISABLE_WEBHOOK` como `1`
 
 <br>
 
@@ -65,6 +66,13 @@ Caso você queira, você pode restringir o acesso do robô a determinados contat
 
 <br>
 
+## 4. Configuração do Webhook
+> Se você não quiser usar o webhook, use a variável `DISABLE_WEBHOOK` e pule esta etapa
+
+* Defina as variáveis `DB_HOST`, `DB_NAME`, `DB_USERNAME` e `DB_PASSWORD` com as credenciais do seu banco de dados MySQL
+
+<br>
+
 # 🚀 Executar
 Para **iniciar o servidor**, basta executar o comando:
 ```
@@ -84,4 +92,9 @@ npm run whatsapp
 Ou se quiser **apenas o servidor do Telegram**:
 ```
 npm run telegram
+```
+
+Para executar **apenas o servidor webhook**:
+```
+npm run webhook
 ```
