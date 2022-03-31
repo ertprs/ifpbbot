@@ -10,11 +10,11 @@ let error = false
 // MÓDULOS
 const MODULES = ([
 	// Caminho do módulo; Desabilitar; Mensagem de desabilitado
-	['./whatsapp', process.env.DISABLE_WHATSAPP, 'Robô do WhatsApp desativado por variável de ambiente'],
-	['./telegram', process.env.DISABLE_TELEGRAM, 'Robô do Telegram desativado por variável de ambiente'],
-	['./google-sheets', process.env.DISABLE_GOOGLE_SHEETS, 'Integração com Planilhas Google desativado por variável de ambiente'],
-	['./webhook', process.env.DISABLE_WEBHOOK, 'Servidor webhook desativado por variável de ambiente'],
-	['./site', process.env.DISABLE_SITE, 'Site desativado por variável de ambiente']
+	['./modules/whatsapp', process.env.DISABLE_WHATSAPP, 'Robô do WhatsApp desativado por variável de ambiente'],
+	['./modules/telegram', process.env.DISABLE_TELEGRAM, 'Robô do Telegram desativado por variável de ambiente'],
+	['./modules/google-sheets', process.env.DISABLE_GOOGLE_SHEETS, 'Integração com Planilhas Google desativado por variável de ambiente'],
+	['./modules/webhook', process.env.DISABLE_WEBHOOK, 'Servidor webhook desativado por variável de ambiente'],
+	['./modules/site', process.env.DISABLE_SITE, 'Site desativado por variável de ambiente']
 ])
 
 // Limpa a tela e imprime o logo

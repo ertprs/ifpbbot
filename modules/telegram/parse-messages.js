@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-const { Context, Markup } = require('telegraf')
+const { Context } = require('telegraf')
 const log = require('@helpers/logger')
 
 /**

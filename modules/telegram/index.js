@@ -1,6 +1,6 @@
 require('dotenv/config')
 require('module-alias/register')
-const { Telegraf, Markup } = require('telegraf')
+const { Telegraf } = require('telegraf')
 const log = require('@helpers/logger')
 const getDFResponse = require('@dialogflow/get-df-response')
 const parseMessages = require('./parse-messages')
