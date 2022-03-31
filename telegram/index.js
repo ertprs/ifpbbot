@@ -57,7 +57,7 @@ const {
 
 if ((whURL || (rSlug && rOwner)) && whPath) {
 	const app = require('@helpers/http')
-	const webhookURL = (whURL || `https://${rSlug}.${rOwner.toLowerCase()}.repl.co`) + (whPath || '/')
+	const webhookURL = (whURL || `https://${rSlug}.${rOwner.toLowerCase()}.repl.co`) + (whPath || '/telegram')
 	bot.telegram.setWebhook(webhookURL).then((s) => !s && start())
 	app.use(bot.webhookCallback(whPath))
 	// bot.startWebhook(whPath, null, process.env.PORT || 443)

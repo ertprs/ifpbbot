@@ -1,6 +1,11 @@
 const Sequelize = require('sequelize')
 const log = require('@helpers/logger')
 
+if (!process.env.DB_NAME || !process.env.DB_USERNAME || !process.env.DB_HOST) {
+	log('redBright', 'Erro')('Credenciais do banco de dados MySQL faltando')
+	throw new Error('Credenciais do banco de dados MySQL faltando')
+}
+
 const sequelize = new Sequelize(
 	process.env.DB_NAME,
 	process.env.DB_USERNAME,

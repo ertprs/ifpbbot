@@ -34,7 +34,7 @@ npm install
 # 🔧 Configuração
 
 ## ❌ Desabilitar uma plataforma
-Caso você queira desativar alguma plataforma, como o WhatsApp ou Telegram, você deve definir a variável de ambiente `DISABLE_WHATSAPP`, `DISABLE_TELEGRAM`, `DISABLE_WEBHOOK` ou `DISABLE_SITE` como `1`
+Caso você queira desativar alguma plataforma, como o WhatsApp ou Telegram, você deve definir a variável de ambiente `DISABLE_WHATSAPP`, `DISABLE_TELEGRAM`, `DISABLE_GOOGLE_SHEETS`, `DISABLE_WEBHOOK` ou `DISABLE_SITE` como `1`
 
 <br>
 
@@ -66,7 +66,13 @@ Caso você queira, você pode restringir o acesso do robô a determinados contat
 
 <br>
 
-## 4. Configuração do Webhook
+## 4. Configuração do Planilhas Google
+> Se você não quiser usar o Planilhas Google, use a variável `DISABLE_GOOGLE_SHEETS` e pule esta etapa
+* Defina a variável `SHEETDB_API` com a chave de API do SheetDB.
+
+<br>
+
+## 5. Configuração do Webhook
 > Se você não quiser usar o webhook, use a variável `DISABLE_WEBHOOK` e pule esta etapa
 
 * Defina as variáveis `DB_HOST`, `DB_NAME`, `DB_USERNAME` e `DB_PASSWORD` com as credenciais do seu banco de dados MySQL
@@ -94,7 +100,17 @@ Ou se quiser **apenas o servidor do Telegram**:
 npm run telegram
 ```
 
+Ou **apenas a integração com Planilhas Google**:
+```
+npm run googleSheets
+```
+
 Para executar **apenas o servidor webhook**:
 ```
 npm run webhook
+```
+
+Ou para **apenas o site**:
+```
+npm run site
 ```

@@ -8,7 +8,9 @@
     "dev": "npx cross-env NODE_ENV=development node index.js",
     "whatsapp": "node whatsapp",
     "telegram": "node telegram",
-    "webhook": "node webhook"
+    "googleSheets": "node google-sheets",
+    "webhook": "node webhook",
+    "site": "node site"
   },
   "keywords": [],
   "author": "Jefferson Dantas",

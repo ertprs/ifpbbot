@@ -1,3 +1,4 @@
+process.on('uncaughtException', console.error)
 require('dotenv/config')
 require('module-alias/register')
 const chalk = require('chalk')
@@ -5,46 +6,53 @@ const log = require('@helpers/logger')
 const makeBox = require('@helpers/makebox')
 const printLogo = require('@helpers/print-logo')
 let error = false
-const {
-	GCLOUD_CREDENTIALS,
-	PROJECT_ID,
-	DISABLE_WHATSAPP,
-	DISABLE_TELEGRAM,
-	DISABLE_WEBHOOK,
-	DISABLE_SITE
-} = process.env
 
+// MÓDULOS
+const MODULES = ([
+	// Caminho do módulo; Desabilitar; Mensagem de desabilitado
+	['./whatsapp', process.env.DISABLE_WHATSAPP, 'Robô do WhatsApp desativado por variável de ambiente'],
+	['./telegram', process.env.DISABLE_TELEGRAM, 'Robô do Telegram desativado por variável de ambiente'],
+	['./google-sheets', process.env.DISABLE_GOOGLE_SHEETS, 'Integração com Planilhas Google desativado por variável de ambiente'],
+	['./webhook', process.env.DISABLE_WEBHOOK, 'Servidor webhook desativado por variável de ambiente'],
+	['./site', process.env.DISABLE_SITE, 'Site desativado por variável de ambiente']
+])
+
+// Limpa a tela e imprime o logo
 console.clear()
 console.log(makeBox('           IFPB ChatBot           ', chalk.yellowBright, chalk.yellow))
 printLogo()
 
-// Possíveis erros
+// Checa possíveis erros
 try {
-	JSON.parse(GCLOUD_CREDENTIALS)
+	JSON.parse(process.env.GCLOUD_CREDENTIALS)
 } catch {
 	error = true
 	log('redBright', 'Erro')('Credenciais do Dialogflow faltando')
 	log('magentaBright', 'Erro')('Inclua suas credenciais do Dialogflow na variável de ambiente GCLOUD_CREDENTIALS')
 }
 
-if (!PROJECT_ID) {
+if (!process.env.PROJECT_ID) {
 	error = true
 	log('redBright', 'Erro')('Nome do projeto do Dialogflow faltando')
 	log('magentaBright', 'Erro')('Inclua o nome do projeto do Dialogflow na variável de ambiente PROJECT_ID')
 }
 
-if (isDisabled(DISABLE_WHATSAPP)) log('yellowBright', 'Aviso')('Robô do WhatsApp desativado por variável de ambiente')
-if (isDisabled(DISABLE_TELEGRAM)) log('yellowBright', 'Aviso')('Robô do Telegram desativado por variável de ambiente')
-if (isDisabled(DISABLE_WEBHOOK)) log('yellowBright', 'Aviso')('Servidor webhook desativado por variável de ambiente')
-if (isDisabled(DISABLE_SITE)) log('yellowBright', 'Aviso')('Site desativado por variável de ambiente')
-
+// Fecha o processo se houver algum erro
 if (error) process.exit()
 
-// Inicia os robôs
-if (!isDisabled(DISABLE_WHATSAPP)) require('./whatsapp')
-if (!isDisabled(DISABLE_TELEGRAM)) require('./telegram')
-if (!isDisabled(DISABLE_WEBHOOK)) require('./webhook')
-if (!isDisabled(DISABLE_SITE)) require('./site')
+// Inicia os módulos
+MODULES.forEach((module) => start(...module))
+
+// Inicia um módulo
+function start(modulePath, disabled = false, disabledMessage = '') {
+	if (isDisabled(disabled)) return log('yellowBright', 'Aviso')(disabledMessage)
+	try {
+		require(modulePath)
+	} catch (err) {
+		log('redBright', 'Erro')(`Erro ao executar o módulo ${modulePath}`)
+		console.error(err)
+	}
+}
 
 // Retorna false se a string indica que não é para desabilitar
 function isDisabled(string) {
