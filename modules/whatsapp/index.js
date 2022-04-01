@@ -18,7 +18,7 @@ const client = new Client({
 	session: fs.existsSync(path.resolve(__dirname, SESSION_FILE_PATH))
 		? jsonParse(fs.readFileSync(path.resolve(__dirname, SESSION_FILE_PATH), { encoding: 'utf-8' }))
 		: jsonParse(process.env.WHATSAPP_TOKEN, null, null, true),
-	puppeteer: { executablePath: chromePath }
+	puppeteer: { executablePath: chromePath, args: ['--no-sandbox'] }
 })
 
 log('yellowBright', 'WhatsApp')('Conectando, aguarde...')
