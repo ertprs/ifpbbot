@@ -6,11 +6,11 @@
   "scripts": {
     "start": "node index.js",
     "dev": "npx cross-env NODE_ENV=development node index.js",
-    "whatsapp": "node whatsapp",
-    "telegram": "node telegram",
-    "googleSheets": "node google-sheets",
-    "webhook": "node webhook",
-    "site": "node site"
+    "whatsapp": "node modules/whatsapp",
+    "telegram": "node modules/telegram",
+    "googleSheets": "node modules/google-sheets",
+    "webhook": "node modules/webhook",
+    "site": "node modules/site"
   },
   "keywords": [],
   "author": "Jefferson Dantas",
@@ -35,6 +35,7 @@
   "_moduleAliases": {
     "@helpers": "helpers",
     "@models": "models",
-    "@dialogflow": "dialogflow"
+    "@dialogflow": "dialogflow",
+    "@modules": "modules"
   }
 }

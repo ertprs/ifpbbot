@@ -5,11 +5,12 @@ const path = require('path')
 const qrcode = require('qrcode-terminal')
 const { Client } = require('whatsapp-web.js')
 const ChromeLauncher = require('chrome-launcher')
-const chromePath = ChromeLauncher.Launcher.getInstallations()[0]
 const log = require('@helpers/logger')
 const jsonParse = require('@helpers/json-parse')
 const getDFResponse = require('@dialogflow/get-df-response')
 const parseMessages = require('./parse-messages')
+let chromePath
+try { chromePath = ChromeLauncher.Launcher.getInstallations()[0] } catch {}
 
 const SESSION_FILE_PATH = './wa-session.json'
 
