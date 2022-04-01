@@ -4,7 +4,11 @@ const dialogflow = require('@google-cloud/dialogflow')
 const { value } = require('pb-util')
 const setContexts = require('./set-df-contexts')
 const LocalSessions = require('@helpers/LocalSessions')
-const sessions = new LocalSessions(path.resolve(__dirname, './df-sessions.json'))
+const RemoteSessions = require('@helpers/RemoteSessions')
+const sessions = process.env.DB_NAME && process.env.DB_USERNAME && process.env.DB_HOST ?
+	new RemoteSessions() :
+	new LocalSessions(path.resolve(__dirname, './df-sessions.json'))
+
 const CREDENTIALS = jsonParse(process.env.GCLOUD_CREDENTIALS)
 
 /**
@@ -27,7 +31,6 @@ async function getDFResponse(text, from, platform = '') {
 	const sessionPath = sessionClient.projectAgentSessionPath(
 		process.env.PROJECT_ID, from
 	)
-
 
 	// Cria uma nova sessão caso não exista
 	if (!sessions.data[from]) sessions.data[from] = {

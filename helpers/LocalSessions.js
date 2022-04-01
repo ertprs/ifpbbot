@@ -1,3 +1,4 @@
+const log = require('@helpers/logger')
 const fs = require('fs')
 
 class LocalSessions {
@@ -16,13 +17,14 @@ class LocalSessions {
 			const result = JSON.parse(data)
 
 			if (typeof result === 'object' && result !== null && !Array.isArray(result)) {
+				log('greenBright', 'Sessões')('Sessões do arquivo carregadas com sucesso')
 				this.data = result
 				return result
 			} else {
 				throw new Error('O conteúdo do arquivo da sessão é inválido')
 			}
 		} catch (err) {
-			console.error('Não foi possível carregar a sessão pelo arquivo\n', err)
+			log('redBright', 'Sessões')('Não foi possível carregar as sessões pelo arquivo\n' + err)
 		}
 	}
 
