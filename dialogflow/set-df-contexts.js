@@ -1,3 +1,4 @@
+const log = require('@helpers/logger')
 const dialogflow = require('@google-cloud/dialogflow')
 const jsonParse = require('@helpers/json-parse')
 const CREDENTIALS = jsonParse(process.env.GCLOUD_CREDENTIALS)
@@ -11,16 +12,20 @@ const CREDENTIALS = jsonParse(process.env.GCLOUD_CREDENTIALS)
  * @returns {Promise<void>}
  */
 async function setContexts(contexts = [], sessionPath) {
-	if (contexts.length <= 0) return
-	const contextClient = new dialogflow.ContextsClient({
-		credentials: CREDENTIALS
-	})
-
-	for (const context of contexts) {
-		await contextClient.createContext({
-			parent: sessionPath,
-			context: context
+	try {
+		if (contexts.length <= 0) return
+		const contextClient = new dialogflow.ContextsClient({
+			credentials: CREDENTIALS
 		})
+
+		for (const context of contexts) {
+			await contextClient.createContext({
+				parent: sessionPath,
+				context: context
+			})
+		}
+	} catch (err) {
+		log('redBright', 'Dialogflow')('Ocorreu um erro ao definir contextos', err.message)
 	}
 }
 
