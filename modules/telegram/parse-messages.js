@@ -34,9 +34,7 @@ async function parseMessages(responses, ctx) {
 	}
 
 	// Printa as respostas
-	if (process.env.NODE_ENV === 'development') {
-		log('Telegram')(responses)
-	}
+	log('cyan', 'Telegram', true)(responses)
 
 	// Converte as respostas para o formato da biblioteca
 	responses = responses.flat().filter(msg => msg)

@@ -34,9 +34,7 @@ function parseMessages(responses, client) {
 	}
 
 	// Printa as respostas
-	if (process.env.NODE_ENV === 'development') {
-		log('WhatsApp')(responses)
-	}
+	log('cyan', 'WhatsApp', true)(responses)
 
 	// Converte as respostas para o formato da biblioteca
 	return responses.flat().filter(msg => msg).map(r => parseResponse(r, client)).filter(msg => msg)

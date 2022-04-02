@@ -43,9 +43,7 @@ async function getIntentsFromSheet() {
 		intents.push(intent)
 	}
 
-	if (process.env.NODE_ENV === 'development') {
-		log('Planilhas Google')(`${intents.length} intents importadas da planilha`)
-	}
+	log('cyan', 'Planilhas Google', true)(`${intents.length} intents importadas da planilha`)
 	return intents
 }
 

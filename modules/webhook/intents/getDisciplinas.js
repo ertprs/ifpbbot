@@ -3,23 +3,17 @@ const random = require('@helpers/random')
 const log = require('@helpers/logger')
 
 module.exports = function (professor) {
-	if (process.env.NODE_ENV === 'development') {
-		log('Webhook')(`Consultando as disciplinas de ${professor}...`)
-	}
+	log('cyan', 'Webhook', true)(`Consultando as disciplinas de ${professor}...`)
 
 	return Professor.findAll({
 		where: { nome: professor }
 	}).then((resultados) => {
 		if (resultados.length === 0) {
-			if (process.env.NODE_ENV === 'development') {
-				log('Webhook')(`Nenhuma disciplina encontrada para ${professor}`)
-			}
+			log('cyan', 'Webhook', true)(`Nenhuma disciplina encontrada para ${professor}`)
 			return '❌ As disciplinas deste professor não foram encontrados no banco de dados'
 		} else {
 			const disciplinas = resultados.map(resultado => resultado.disciplina).join(', ')
-			if (process.env.NODE_ENV === 'development') {
-				log('Webhook')(`As disciplinas de ${professor} são: ${disciplinas}`)
-			}
+			log('cyan', 'Webhook', true)(`As disciplinas de ${professor} são: ${disciplinas}`)
 
 			return random([
 				`${professor} é o professor de *${disciplinas}*`,
@@ -28,9 +22,7 @@ module.exports = function (professor) {
 			])
 		}
 	}).catch((err) => {
-		if (process.env.NODE_ENV === 'development') {
-			log('Webhook')('Ocorreu um erro\n' + err)
-		}
+		log('cyan', 'Webhook', true)('Ocorreu um erro', err)
 		return '🐛 Desculpe! Ocorreu um erro durante a busca'
 	})
 }

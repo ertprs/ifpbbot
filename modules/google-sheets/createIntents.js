@@ -33,9 +33,7 @@ async function createIntents(intents) {
 			intent: finalIntent
 		})
 
-		if (process.env.NODE_ENV === 'development') {
-			log('Planilhas Google')(`Intent criada (${+i + 1}/${intents.length}) ${response.displayName}`)
-		}
+		log('cyan', 'Planilhas Google', true)(`Intent criada (${+i + 1}/${intents.length}) ${response.displayName}`)
 	}
 }
 

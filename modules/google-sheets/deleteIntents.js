@@ -12,9 +12,7 @@ async function deleteIntents(intents) {
 		const intent = intents[i]
 		await intentsClient.deleteIntent({ name: intent.name })
 		
-		if (process.env.NODE_ENV === 'development') {
-			log('Planilhas Google')(`Intent excluída (${+i + 1}/${intents.length}) ${intent.displayName}`)
-		}
+		log('cyan', 'Planilhas Google', true)(`Intent excluída (${+i + 1}/${intents.length}) ${intent.displayName}`)
 	}
 }
 

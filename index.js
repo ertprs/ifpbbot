@@ -45,7 +45,7 @@ MODULES.forEach((module) => start(...module))
 
 // Inicia um módulo
 function start(modulePath, disabled = false, disabledMessage = '') {
-	if (isDisabled(disabled)) return log('yellowBright', 'Aviso')(disabledMessage)
+	if (isDisabled(disabled)) return log('cyan', 'Aviso')(disabledMessage)
 	try {
 		require(modulePath)
 	} catch (err) {

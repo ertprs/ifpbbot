@@ -5,9 +5,9 @@ const { value } = require('pb-util')
 const setContexts = require('./set-df-contexts')
 const LocalSessions = require('@helpers/LocalSessions')
 const RemoteSessions = require('@helpers/RemoteSessions')
-const sessions = process.env.DB_NAME && process.env.DB_USERNAME && process.env.DB_HOST ?
-	new RemoteSessions() :
-	new LocalSessions(path.resolve(__dirname, './df-sessions.json'))
+const sessions = process.env.DB_NAME && process.env.DB_USERNAME && process.env.DB_HOST
+	? new RemoteSessions()
+	: new LocalSessions(path.resolve(__dirname, './df-sessions.json'))
 
 const CREDENTIALS = jsonParse(process.env.GCLOUD_CREDENTIALS)
 

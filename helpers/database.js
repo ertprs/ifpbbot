@@ -19,6 +19,6 @@ const sequelize = new Sequelize(
 
 sequelize.authenticate()
 	.then(() => log('greenBright', 'MySQL')('Conectado'))
-	.catch((err) => log('redBright', 'MySQL')('Falha ao conectar\n' + err))
+	.catch((err) => log('redBright', 'MySQL')('Falha ao conectar', err))
 
 module.exports = sequelize

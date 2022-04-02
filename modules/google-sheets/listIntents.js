@@ -23,9 +23,7 @@ async function listIntents() {
 		}
 	}
 
-	if (process.env.NODE_ENV === 'development') {
-		log('Planilhas Google')(`${intentsForSheet.length} intents existentes encontradas`)
-	}
+	log('cyan', 'Planilhas Google', true)(`${intentsForSheet.length} intents existentes encontradas`)
 	return intentsForSheet
 }
 

@@ -5,9 +5,12 @@ const chalk = require('chalk')
  * 
  * @param {chalk.ForegroundColor} color - Cor do texto a ser impresso
  * @param {string} title - Título do log
+ * @param {boolean} onlyDevelopment - Imprime apenas se estiver no ambiente de desenvolvimento
  * @returns {function(): void} Função de imprimir
  */
-function log(color, title) {
+function log(color, title, onlyDevelopment = false) {
+	if (onlyDevelopment && process.env.NODE_ENV !== 'development') return () => { }
+
 	if (!chalk[color]) {
 		title = color
 	}

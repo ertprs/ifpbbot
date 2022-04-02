@@ -39,7 +39,7 @@ router.get('/updateDialogflow', async (req, res) => {
 		})
 	} catch (err) {
 		res.json({ success: false })
-		log('redBright', 'Erro')('Erro ao inserir dados das Planilhas Google\n' + err)
+		log('redBright', 'Erro')('Erro ao inserir dados das Planilhas Google', err)
 	}
 })
 
