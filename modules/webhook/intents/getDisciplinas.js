@@ -1,5 +1,5 @@
 const Professor = require('@models/Professor')
-const random = require('@helpers/random')
+const { randomItem: random } = require('@helpers/helpers')
 const log = require('@helpers/logger')
 
 module.exports = function (professor) {

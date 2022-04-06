@@ -1,10 +1,10 @@
 const path = require('path')
-const jsonParse = require('@helpers/json-parse')
+const { jsonParse } = require('@helpers/helpers')
 const dialogflow = require('@google-cloud/dialogflow')
 const { value } = require('pb-util')
 const setContexts = require('./set-df-contexts')
-const LocalSessions = require('@helpers/LocalSessions')
-const RemoteSessions = require('@helpers/RemoteSessions')
+const LocalSessions = require('./LocalSessions')
+const RemoteSessions = require('./RemoteSessions')
 const sessions = process.env.DB_NAME && process.env.DB_USERNAME && process.env.DB_HOST
 	? new RemoteSessions()
 	: new LocalSessions(path.resolve(__dirname, './df-sessions.json'))

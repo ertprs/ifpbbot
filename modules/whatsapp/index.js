@@ -5,6 +5,7 @@ const qrcode = require('qrcode-terminal')
 const { Client, LocalAuth } = require('whatsapp-web.js')
 const ChromeLauncher = require('chrome-launcher')
 const log = require('@helpers/logger')
+const { isDisabled } = require('@helpers/helpers')
 const getDFResponse = require('@dialogflow/get-df-response')
 const { load: loadWWebJSBackup, save: saveWWebJSBackup } = require('./backup-data')
 const parseMessages = require('./parse-messages')
@@ -25,7 +26,11 @@ async function start() {
 		authStrategy: new LocalAuth({
 			dataPath: path.join(__dirname, '.wwebjs_auth')
 		}),
-		puppeteer: { executablePath: chromePath, args: ['--no-sandbox'] }
+		puppeteer: {
+			executablePath: chromePath,
+			args: ['--no-sandbox'],
+			headless: !isDisabled(process.env.SHOW_WHATSAPP_BROWSER)
+		}
 	})
 
 	setInterval(() => saveWWebJSBackup(client), 120000)
