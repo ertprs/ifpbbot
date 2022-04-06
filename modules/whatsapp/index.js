@@ -6,11 +6,11 @@ const qrcode = require('qrcode-terminal')
 const { Client } = require('whatsapp-web.js')
 const ChromeLauncher = require('chrome-launcher')
 const log = require('@helpers/logger')
-const jsonParse = require('@helpers/json-parse')
+const { jsonParse, isDisabled } = require('@helpers/helpers')
 const getDFResponse = require('@dialogflow/get-df-response')
 const parseMessages = require('./parse-messages')
 let chromePath
-try { chromePath = ChromeLauncher.Launcher.getInstallations()[0] } catch {}
+try { chromePath = ChromeLauncher.Launcher.getInstallations()[0] } catch { }
 
 const SESSION_FILE_PATH = './wa-session.json'
 
@@ -18,7 +18,7 @@ const client = new Client({
 	session: fs.existsSync(path.resolve(__dirname, SESSION_FILE_PATH))
 		? jsonParse(fs.readFileSync(path.resolve(__dirname, SESSION_FILE_PATH), { encoding: 'utf-8' }))
 		: jsonParse(process.env.WHATSAPP_TOKEN, null, null, true),
-	puppeteer: { executablePath: chromePath, args: ['--no-sandbox'] }
+	puppeteer: { executablePath: chromePath, args: ['--no-sandbox'], headless: !isDisabled(process.env.SHOW_WHATSAPP_BROWSER) },
 })
 
 log('yellowBright', 'WhatsApp')('Conectando, aguarde...')

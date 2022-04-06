@@ -5,6 +5,7 @@ const chalk = require('chalk')
 const log = require('@helpers/logger')
 const makeBox = require('@helpers/makebox')
 const printLogo = require('@helpers/print-logo')
+const { isDisabled } = require('@helpers/helpers')
 let error = false
 
 // MÓDULOS
@@ -52,10 +53,4 @@ function start(modulePath, disabled = false, disabledMessage = '') {
 		log('redBright', 'Erro')(`Erro ao executar o módulo ${modulePath}`)
 		console.error(err)
 	}
-}
-
-// Retorna false se a string indica que não é para desabilitar
-function isDisabled(string) {
-	const DISABLED_STRINGS = ['false', 'no', '0', '']
-	return !!(string && !DISABLED_STRINGS.includes(string))
 }
