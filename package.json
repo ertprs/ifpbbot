@@ -30,7 +30,7 @@
     "mysql2": "^2.3.3",
     "pb-util": "^1.0.3",
     "qrcode-terminal": "^0.12.0",
-    "sequelize": "^6.17.0",
+    "sequelize": "^6.18.0",
     "simple-encryptor": "^4.0.0",
     "telegraf": "^4.6.0",
     "whatsapp-web.js": "^1.15.3"
