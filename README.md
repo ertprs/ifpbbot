@@ -114,3 +114,7 @@ Ou para **apenas o site**:
 ```
 npm run site
 ```
+
+<br>
+
+<div align="center"><sub>Desenvolvido por Jefferson Dantas</sub></div>
