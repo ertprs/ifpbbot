@@ -6,11 +6,11 @@
   "scripts": {
     "start": "node index.js",
     "dev": "npx cross-env NODE_ENV=development node index.js",
-    "whatsapp": "node modules/whatsapp",
-    "telegram": "node modules/telegram",
-    "googleSheets": "node modules/google-sheets",
-    "webhook": "node modules/webhook",
-    "site": "node modules/site"
+    "whatsapp": "node src/modules/whatsapp",
+    "telegram": "node src/modules/telegram",
+    "googleSheets": "node src/modules/google-sheets",
+    "webhook": "node src/modules/webhook",
+    "site": "node src/modules/site"
   },
   "keywords": [],
   "author": "Jefferson Dantas",
@@ -37,9 +37,9 @@
     "whatsapp-web.js": "^1.15.3"
   },
   "_moduleAliases": {
-    "@helpers": "helpers",
-    "@models": "models",
-    "@dialogflow": "dialogflow",
-    "@modules": "modules"
+    "@helpers": "src/helpers",
+    "@models": "src/models",
+    "@dialogflow": "src/dialogflow",
+    "@modules": "src/modules"
   }
 }

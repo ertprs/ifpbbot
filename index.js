@@ -11,11 +11,11 @@ let error = false
 // MÓDULOS
 const MODULES = ([
 	// Caminho do módulo; Desabilitar; Mensagem de desabilitado
-	['./modules/whatsapp', process.env.DISABLE_WHATSAPP, 'Robô do WhatsApp desativado por variável de ambiente'],
-	['./modules/telegram', process.env.DISABLE_TELEGRAM, 'Robô do Telegram desativado por variável de ambiente'],
-	['./modules/google-sheets', process.env.DISABLE_GOOGLE_SHEETS, 'Integração com Planilhas Google desativado por variável de ambiente'],
-	['./modules/webhook', process.env.DISABLE_WEBHOOK, 'Servidor webhook desativado por variável de ambiente'],
-	['./modules/site', process.env.DISABLE_SITE, 'Site desativado por variável de ambiente']
+	['whatsapp', process.env.DISABLE_WHATSAPP, 'Robô do WhatsApp desativado por variável de ambiente'],
+	['telegram', process.env.DISABLE_TELEGRAM, 'Robô do Telegram desativado por variável de ambiente'],
+	['google-sheets', process.env.DISABLE_GOOGLE_SHEETS, 'Integração com Planilhas Google desativado por variável de ambiente'],
+	['webhook', process.env.DISABLE_WEBHOOK, 'Servidor webhook desativado por variável de ambiente'],
+	['site', process.env.DISABLE_SITE, 'Site desativado por variável de ambiente']
 ])
 
 // Limpa a tela e imprime o logo
@@ -45,12 +45,12 @@ if (error) process.exit()
 MODULES.forEach((module) => start(...module))
 
 // Inicia um módulo
-function start(modulePath, disabled = false, disabledMessage = '') {
+function start(moduleName, disabled = false, disabledMessage = '') {
 	if (isDisabled(disabled)) return log('cyan', 'Aviso')(disabledMessage)
 	try {
-		require(modulePath)
+		require(`./src/modules/${moduleName}`)
 	} catch (err) {
-		log('redBright', 'Erro')(`Erro ao executar o módulo ${modulePath}`)
+		log('redBright', 'Erro')(`Erro ao executar o módulo ${moduleName}`)
 		console.error(err)
 	}
 }
