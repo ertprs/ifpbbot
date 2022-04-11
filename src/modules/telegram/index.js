@@ -51,8 +51,9 @@ function start() {
 if (process.env.TELEGRAM_WEBHOOK_URL) {
 	const app = require('@helpers/http')
 	const webhookURL = process.env.TELEGRAM_WEBHOOK_URL
+	const webhookPath = new URL(process.env.TELEGRAM_WEBHOOK_URL).pathname
 	bot.telegram.setWebhook(webhookURL).then((s) => !s && start())
-	app.use(bot.webhookCallback(whPath))
+	app.use(bot.webhookCallback(webhookPath))
 	log('greenBright', 'Telegram')('Servidor Webhook aberto')
 } else {
 	start()
