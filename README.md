@@ -61,8 +61,7 @@ Caso você queira, você pode restringir o acesso do robô a determinados contat
 * Crie seu bot no @BotFather e coloque o token na variável de ambiente `TELEGRAM_BOT_TOKEN`
 
 ### Configurar Webhook
-* Coloque o URL do seu servidor Webhook na variável `TELEGRAM_WEBHOOK_URL` (sem a barra "/" no final)
-* Coloque o caminho do servidor na variável `TELEGRAM_WEBHOOK_SECRET_PATH` começando com barra "/"
+* Coloque o URL do seu servidor Webhook na variável `TELEGRAM_WEBHOOK_URL`
 
 <br>
 
