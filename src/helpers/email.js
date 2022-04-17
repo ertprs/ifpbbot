@@ -10,7 +10,7 @@ async function createTransporter() {
 	)
 
 	oauth2Client.setCredentials({
-		refresh_token: process.env.GMAIL_REFRESH_TOKEN
+		refresh_token: process.env.GMAIL_REFRESH_TOKEN // eslint-disable-line camelcase
 	})
 
 	const accessToken = await new Promise((resolve, reject) => {

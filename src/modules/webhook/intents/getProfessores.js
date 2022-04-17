@@ -18,7 +18,7 @@ module.exports = function (disciplina) {
 			return random([
 				`A disciplina ${disciplina} é ministrada por *${professores}*`,
 				`*${professores}* ensina(m) ${disciplina}`,
-				`*${professores}* ministra(m) a disciplina de ${disciplina}`,
+				`*${professores}* ministra(m) a disciplina de ${disciplina}`
 			])
 		}
 	}).catch((err) => {

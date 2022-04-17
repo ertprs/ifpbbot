@@ -9,16 +9,16 @@ const intentsClient = new dialogflow.IntentsClient({
  * Lista as intents que pertencem à planilha no Dialogflow
  */
 async function listIntents() {
-  const projectAgentPath = intentsClient.projectAgentPath(projectId)
+	const projectAgentPath = intentsClient.projectAgentPath(projectId)
 
-  const [response] = await intentsClient.listIntents({ parent: projectAgentPath })
+	const [response] = await intentsClient.listIntents({ parent: projectAgentPath })
 
 	const intentsForSheet = []
-  for (const intent of response) {
+	for (const intent of response) {
 		if (intent.displayName && intent.displayName.startsWith('~planilha.')) {
 			intentsForSheet.push({
 				name: intent.name,
-				displayName: intent.displayName,
+				displayName: intent.displayName
 			})
 		}
 	}

@@ -16,7 +16,7 @@ const oauth2Client = new google.auth.OAuth2(
 )
 
 oauth2Client.setCredentials({
-	refresh_token: process.env.GOOGLE_REFRESH_TOKEN
+	refresh_token: process.env.GOOGLE_REFRESH_TOKEN // eslint-disable-line camelcase
 })
 
 const drive = google.drive({
@@ -63,7 +63,7 @@ function uploadFile(fileName, filePath, parentFolder) {
 async function downloadFile(fileName, downloadFilePath, parentFolder) {
 	return new Promise(async (resolve, reject) => {
 		const listFilesResponse = await drive.files.list({
-			q: parentFolder ? `"${parentFolder}" in parents` : undefined,
+			q: parentFolder ? `"${parentFolder}" in parents` : undefined
 		})
 
 		const file = listFilesResponse.data.files.find((file) => file.name === fileName)
@@ -72,7 +72,7 @@ async function downloadFile(fileName, downloadFilePath, parentFolder) {
 		const dest = fs.createWriteStream(downloadFilePath)
 		const downloadFileResponse = await drive.files.get({
 			fileId: file.id,
-			alt: 'media',
+			alt: 'media'
 		}, {
 			responseType: 'stream'
 		})
