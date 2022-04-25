@@ -13,14 +13,14 @@ let chromePath
 try { chromePath = ChromeLauncher.Launcher.getInstallations()[0] } catch { }
 
 async function start() {
-	if (
-		process.env.GOOGLE_CLIENT_ID &&
-		process.env.GOOGLE_CLIENT_SECRET &&
-		process.env.GOOGLE_REDIRECT_URI &&
-		process.env.GOOGLE_REFRESH_TOKEN
-	) {
-		await loadWWebJSBackup()
-	}
+	// if (
+	// 	process.env.GOOGLE_CLIENT_ID &&
+	// 	process.env.GOOGLE_CLIENT_SECRET &&
+	// 	process.env.GOOGLE_REDIRECT_URI &&
+	// 	process.env.GOOGLE_REFRESH_TOKEN
+	// ) {
+	// 	await loadWWebJSBackup()
+	// }
 
 	const client = new Client({
 		authStrategy: new LocalAuth({
@@ -33,7 +33,7 @@ async function start() {
 		}
 	})
 
-	setInterval(() => saveWWebJSBackup(client), 120000)
+	// setInterval(() => saveWWebJSBackup(client), 120000)
 	log('yellowBright', 'WhatsApp')('Conectando, aguarde...')
 
 	// Falha na autenticação
@@ -90,13 +90,13 @@ async function start() {
 	async function sendMessages(msgs, client, msg) {
 		for (let res of msgs) {
 			// Se a mensagem for uma Promise
-			if (res.then) res = await res.catch((err) => {
+			if (res && res.content && res.content.then) res.content = await res.content.catch((err) => {
 				console.error(err)
 				return null
 			})
 
 			// Envia apenas se a mensagem for válida
-			if (res) await client.sendMessage(msg.from, res).catch(console.error)
+			if (res && res.content) await client.sendMessage(msg.from, res.content, res.options).catch(console.error)
 		}
 	}
 

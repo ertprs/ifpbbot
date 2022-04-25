@@ -79,6 +79,9 @@ async function parseResponse(msg, ctx) {
 		case 'accordion':
 			await ctx.replyWithMarkdown(`*${msg.title}*\n────────────────────\n${msg.text}`, replyMarkup)
 			break
+		case 'sticker':
+			await ctx.replyWithSticker(msg.url)
+			break
 		default:
 			break
 	}

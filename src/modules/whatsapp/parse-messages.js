@@ -53,26 +53,37 @@ function parseMessages(responses, client) {
  */
 function parseResponse(msg, client) {
 	switch (msg.type.toLowerCase().trim()) {
-		case 'text': return msg.text
+		case 'text': return { content: msg.text }
 		case 'chips':
-			return new Buttons(
-				msg.prompt || '​',
-				msg.options.map(opt => ({ body: opt.text }))
-			)
+			return {
+				content: new Buttons(
+					msg.prompt || '​',
+					msg.options.map(opt => ({ body: opt.text }))
+				)
+			}
 		case 'image':
-			return MessageMedia.fromUrl(msg.rawUrl, { unsafeMime: true }).then(file => {
-				file.filename = msg.accessibilityText
-				return file
-			})
+			return {
+				content: MessageMedia.fromUrl(msg.rawUrl, { unsafeMime: true }).then(file => {
+					file.filename = msg.accessibilityText
+					return file
+				})
+			}
 		case 'file':
-			return MessageMedia.fromUrl(msg.url, { unsafeMime: true }).then(file => {
-				file.filename = msg.name
-				return file
-			})
+			return {
+				content: MessageMedia.fromUrl(msg.url, { unsafeMime: true }).then(file => {
+					file.filename = msg.name
+					return file
+				})
+			}
 		case 'contact':
-			return client.getContactById(msg.number)
+			return { content: client.getContactById(msg.number) }
 		case 'accordion':
-			return `*${msg.title}*\n────────────────────\n${msg.text}`
+			return { content: `*${msg.title}*\n────────────────────\n${msg.text}` }
+		case 'sticker':
+			return {
+				content: MessageMedia.fromUrl(msg.url, { unsafeMime: true }),
+				options: { sendMediaAsSticker: true }
+			}
 		default:
 			return null
 	}

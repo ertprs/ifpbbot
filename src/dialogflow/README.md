@@ -10,7 +10,7 @@ Esta função retorna uma *Promise* que resolvida retorna um *array* com as resp
 ```javascript
 [
   {
-    type: 'text|chips|image|file|contact|accordion|random'
+    type: 'text|chips|image|file|sticker|contact|accordion|random'
     // Outros parâmetros específicos de cada tipo
   },
   ...
@@ -68,6 +68,25 @@ Envia uma imagem<br>
 ### `file`
 Envia um arquivo
 > Não suportado pelo Dialogflow Messenger
+```json
+{
+  "type": "file",
+  "url": "URL do arquivo",
+  "name": "Nome do arquivo" // Opcional
+}
+```
+
+### `sticker`
+Envia uma figurinha
+> Não suportado pelo Dialogflow Messenger
+
+> O Telegram suporta figurinhas apenas no formato WebP, outros formatos serão enviados como arquivos
+
+> O WhatsApp suporta outros formatos
+
+> Para enviar uma figurinha animada no WhatsApp envie um WebP animado, não um GIF
+
+> O Telegram não suporta figurinhas animadas
 ```json
 {
   "type": "file",

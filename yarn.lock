@@ -1788,11 +1788,6 @@ sandwich-stream@^2.0.2:
   resolved "https://registry.yarnpkg.com/sandwich-stream/-/sandwich-stream-2.0.2.tgz#6d1feb6cf7e9fe9fadb41513459a72c2e84000fa"
   integrity sha512-jLYV0DORrzY3xaz/S9ydJL6Iz7essZeAfnAavsJ+zsJGZ1MOnsS52yRjU3uF3pJa/lla7+wisp//fxOwOH8SKQ==
 
-scmp@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/scmp/-/scmp-2.0.0.tgz#247110ef22ccf897b13a3f0abddb52782393cd6a"
-  integrity sha1-JHEQ7yLM+JexOj8KvdtSeCOTzWo=
-
 semver@^7.3.5:
   version "7.3.5"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.3.5.tgz#0b621c879348d8998e4b0e4be94b3f12e6018ef7"
@@ -1886,13 +1881,6 @@ side-channel@^1.0.4:
     call-bind "^1.0.0"
     get-intrinsic "^1.0.2"
     object-inspect "^1.9.0"
-
-simple-encryptor@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/simple-encryptor/-/simple-encryptor-4.0.0.tgz#aac74b12c365879115ed683c05e17c235a457cc8"
-  integrity sha512-J3oCeJDjRf/X6ZQkpowMKutEDxkjDESRIbdov+PiPwmatepkGZQaF2WHTr7V1cUQnd843E4dQq4zlwruGKGM7w==
-  dependencies:
-    scmp "2.0.0"
 
 sqlstring@^2.3.2:
   version "2.3.3"
@@ -2097,10 +2085,10 @@ webidl-conversions@^3.0.0:
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
   integrity sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=
 
-whatsapp-web.js@^1.15.3:
-  version "1.16.5"
-  resolved "https://registry.yarnpkg.com/whatsapp-web.js/-/whatsapp-web.js-1.16.5.tgz#ad12228e7da3872a1ae38be0ca13a42dce1ed740"
-  integrity sha512-4gkGuZgQngIOd68b5vC6ocTct2mHsWagSWepkKXhaDF+5xV/8rO9ynmPvMK1BjURRS8ET85y4HUDhpPabH+CnA==
+whatsapp-web.js@^1.16.6:
+  version "1.16.6"
+  resolved "https://registry.yarnpkg.com/whatsapp-web.js/-/whatsapp-web.js-1.16.6.tgz#aa2df3c94f5422adb6042ab341276f2ef068ebe7"
+  integrity sha512-y60KszDx15sBWrRC/+p4tQHb0CFStcvrFuDLzaD+weBiXL22CK5/RLaHG9qLE8Z2Nsac6TV8MxiBvVssR5FSqA==
   dependencies:
     "@pedroslopez/moduleraid" "^5.0.2"
     fluent-ffmpeg "^2.1.2"
