@@ -1,5 +1,5 @@
 const path = require('path')
-const { jsonParse } = require('@helpers/helpers')
+const { jsonParse, randomItem } = require('@helpers/helpers')
 const dialogflow = require('@google-cloud/dialogflow')
 const { value } = require('pb-util')
 const setContexts = require('./set-df-contexts')
@@ -62,18 +62,43 @@ async function getDFResponse(text, from, platform = '') {
 	sessions.data[from].lastMessageDate = Date.now()
 
 	// Converte as respostas em formato de String e Payload em Objeto
-	const responses = response.queryResult.fulfillmentMessages.map((msg) => {
-		if (msg.text) return {
-			type: 'text',
-			text: msg.text.text.join('\n')
-		}
-		if (msg.payload) {
-			return value.decode(msg.payload.fields.richContent)[0]
-		}
-	}).flat()
+	const responses = response.queryResult.fulfillmentMessages
+		.map(parseResponse)
+		.flat()
+		.filter(filterInvalidResponses)
+		.map(parseRandomResponses)
+		.flat()
+		.filter(filterInvalidResponses)
 
 	// Retorna as respostas do Dialogflow
 	return responses
+}
+
+// Converte as respostas do formato do Dialogflow para objetos comuns
+function parseResponse(msg) {
+	if (msg.text) return {
+		type: 'text',
+		text: msg.text.text.join('\n')
+	}
+	if (msg.payload) {
+		return value.decode(msg.payload.fields.richContent)[0]
+	}
+}
+
+// Se houver um payload do tipo 'random', seleciona uma escolha aleatória
+function parseRandomResponses(msg) {
+	if (msg.type.toLowerCase().trim() === 'random' && Array.isArray(msg.items)) {
+		return randomItem(msg.items)
+	}
+
+	return msg
+}
+
+// Remove respostas inválidas
+function filterInvalidResponses(msg) {
+	if (typeof msg !== 'object') return false
+	if (typeof msg.type !== 'string') return false
+	return msg
 }
 
 module.exports = getDFResponse

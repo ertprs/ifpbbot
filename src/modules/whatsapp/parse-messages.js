@@ -33,11 +33,15 @@ function parseMessages(responses, client) {
 		}
 	}
 
-	// Printa as respostas
+	// Printa as respostas no ambiente de desenvolvimento
 	log('cyan', 'WhatsApp', true)(responses)
 
-	// Converte as respostas para o formato da biblioteca
-	return responses.flat().filter(msg => msg).map(r => parseResponse(r, client)).filter(msg => msg)
+	// Converte as respostas para o formato da biblioteca WhatsApp Web JS
+	return responses
+		.flat()
+		.filter(msg => msg)
+		.map(r => parseResponse(r, client))
+		.filter(msg => msg)
 }
 
 /**
@@ -48,7 +52,7 @@ function parseMessages(responses, client) {
  * @returns {string|Buttons|MessageMedia} Respostas da biblioteca
  */
 function parseResponse(msg, client) {
-	switch (msg.type) {
+	switch (msg.type.toLowerCase().trim()) {
 		case 'text': return msg.text
 		case 'chips':
 			return new Buttons(

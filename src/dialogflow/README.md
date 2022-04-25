@@ -10,7 +10,7 @@ Esta função retorna uma *Promise* que resolvida retorna um *array* com as resp
 ```javascript
 [
   {
-    type: 'text|chips|image|file|contact|accordion'
+    type: 'text|chips|image|file|contact|accordion|random'
     // Outros parâmetros específicos de cada tipo
   },
   ...
@@ -96,6 +96,29 @@ Envia um acordeão, que pode ser expandido ao clicar<br>
   "type": "accordion",
   "title": "Título do acordeão",
   "text": "Conteúdo"
+}
+```
+
+### `random`
+Envia um _payload_ aleatório ou um conjunto de _payloads_ de qualquer tipo<br>
+> Não suportado pelo Dialogflow Messenger
+```json
+{
+  "type": "random",
+  "items": [
+    { "type": "text", "text": "Texto único" },
+
+    // Ou
+
+    { "type": "chips", "options": [{ "text": "Botão" }] },
+
+    // Ou
+
+    [
+      { "type": "text", "text": "Texto 1" },
+      { "type": "text", "text": "Texto 2" }
+    ]
+  ]
 }
 ```
 

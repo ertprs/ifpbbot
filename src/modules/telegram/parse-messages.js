@@ -33,10 +33,10 @@ async function parseMessages(responses, ctx) {
 		}
 	}
 
-	// Printa as respostas
+	// Printa as respostas no ambiente de desenvolvimento
 	log('cyan', 'Telegram', true)(responses)
 
-	// Converte as respostas para o formato da biblioteca
+	// Converte as respostas para o formato da biblioteca Telegraf
 	responses = responses.flat().filter(msg => msg)
 	for (const response of responses) {
 		await parseResponse(response, ctx)
@@ -53,7 +53,7 @@ async function parseResponse(msg, ctx) {
 	const forceReply = ctx.chat.type === 'supergroup' ? { force_reply: true } : {}
 	const replyMarkup = ctx.chat.type === 'supergroup' ? { reply_markup: { ...forceReply } } : undefined
 
-	switch (msg.type) {
+	switch (msg.type.toLowerCase().trim()) {
 		case 'text':
 			if (msg.text) await ctx.replyWithMarkdown(msg.text, replyMarkup)
 			break
