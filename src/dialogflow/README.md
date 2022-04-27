@@ -10,7 +10,7 @@ Esta função retorna uma *Promise* que resolvida retorna um *array* com as resp
 ```javascript
 [
   {
-    type: 'text|chips|image|file|sticker|contact|accordion|random'
+    type: 'text|chips|option_list|image|file|sticker|contact|accordion|random'
     // Outros parâmetros específicos de cada tipo
   },
   ...
@@ -50,6 +50,41 @@ Envia botões clicáveis para respostas rápidas<br>
     { "text": "Botão 1" },
     { "text": "Botão 2" },
     { "text": "Botão 3" }
+  ]
+}
+```
+
+### `option_list`
+Envia uma lista de opções<br>
+> Obs.: Somente suportado pelo WhatsApp (não suportado pelo WhatsApp Business) e Telegram
+
+> Importante.: Se você estiver no WhatsApp normal, adicione a variável de ambiente `WHATSAPP_LISTS=1` para funcionar, caso esteja no WhatsApp Business, não adicione pois não irá funcionar
+
+> No Telegram será enviado como texto comum
+
+```json
+{
+  "type": "option_list",
+  "buttonText": "Texto do botão",
+  "title": "Título", // Opcional
+  "body": "Conteúdo",
+  "footer": "Rodapé", // Opcional, nem sempre funciona
+  "sections": [
+    {
+      "title": "Título 1",
+      "rows": [
+        { "title": "Opção 1" },
+        { "title": "Opção 2" },
+        { "title": "Opção 3" }
+      ]
+    },
+    {
+      "title": "Título 2",
+      "rows": [
+        { "title": "Opção 1", "description": "Descrição 1" },
+        { "title": "Opção 2", "description": "Descrição 2" }
+      ]
+    }
   ]
 }
 ```

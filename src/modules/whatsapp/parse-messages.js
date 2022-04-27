@@ -1,5 +1,6 @@
-const { Buttons, MessageMedia } = require('whatsapp-web.js')
+const { Buttons, List, MessageMedia } = require('whatsapp-web.js')
 const log = require('@helpers/logger')
+const optionsList = require('@helpers/options-list')
 
 /**
  * Retorna as respostas formatadas para a biblioteca whatsapp-web.js
@@ -79,6 +80,16 @@ function parseResponse(msg, client) {
 			return { content: client.getContactById(msg.number) }
 		case 'accordion':
 			return { content: `*${msg.title}*\n────────────────────\n${msg.text}` }
+		case 'option_list':
+			return {
+				content: !process.env.WHATSAPP_LISTS ? optionsList(msg) : new List(
+					msg.body || '​',
+					msg.buttonText || 'Lista',
+					msg.sections || [],
+					msg.title,
+					msg.footer
+				)
+			}
 		case 'sticker':
 			return {
 				content: MessageMedia.fromUrl(msg.url, { unsafeMime: true }),

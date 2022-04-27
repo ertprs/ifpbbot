@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 const { Context } = require('telegraf')
 const log = require('@helpers/logger')
+const optionsList = require('@helpers/options-list')
 
 /**
  * Retorna as respostas formatadas para a biblioteca telegraf
@@ -78,6 +79,9 @@ async function parseResponse(msg, ctx) {
 			break
 		case 'accordion':
 			await ctx.replyWithMarkdown(`*${msg.title}*\n────────────────────\n${msg.text}`, replyMarkup)
+			break
+		case 'option_list':
+			await ctx.replyWithMarkdown(optionsList(msg), replyMarkup)
 			break
 		case 'sticker':
 			await ctx.replyWithSticker(msg.url)
