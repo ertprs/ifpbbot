@@ -1,6 +1,6 @@
 node_modules
 .env
-*test*
+test/
 tokens
 sessions.json
 wa-session.json

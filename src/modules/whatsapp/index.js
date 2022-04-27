@@ -33,6 +33,11 @@ async function start() {
 		}
 	})
 
+	// Página de teste do WhatsApp
+	if (process.env.NODE_ENV === 'development') {
+		require('./test-messages')(client)
+	}
+
 	// setInterval(() => saveWWebJSBackup(client), 120000)
 	log('yellowBright', 'WhatsApp')('Conectando, aguarde...')
 
