@@ -6,27 +6,22 @@ const express = require('express')
 const basicAuth = require('express-basic-auth')
 const router = express.Router()
 
-if (!process.env.SHEETDB_API) {
-	log('redBright', 'Erro')('Chave de API do SheetDB faltando')
-	log('magenta', 'Erro')('Inclua a chave de API do SheetDB na variável de ambiente SHEETDB_API')
-	throw new Error('Chave de API do SheetDB faltando')
-}
-
-const getIntentsFromSheet = require('./getIntentsFromSheet')
-const listIntents = require('./listIntents')
-const deleteIntents = require('./deleteIntents')
-const createIntents = require('./createIntents')
+const processIntents = require('./process-intents')
+const listIntents = require('./list-intents')
+const deleteIntents = require('./delete-intents')
+const createIntents = require('./create-intents')
 
 if (process.env.GOOGLE_SHEETS_USERS) router.use(basicAuth({
 	users: JSON.parse(process.env.GOOGLE_SHEETS_USERS || '{}'),
 	unauthorizedResponse: () => 'Você não tem autorização para utilizar este servidor'
 }))
 
-router.get('/updateDialogflow', async (req, res) => {
+router.post('/updateDialogflow', async (req, res) => {
 	try {
 		const startTime = Date.now()
 
-		const newIntents = await getIntentsFromSheet()
+		const intents = req.body.intents
+		const newIntents = processIntents(intents)
 		const currentIntents = await listIntents()
 		await deleteIntents(currentIntents)
 		await createIntents(newIntents)

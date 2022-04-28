@@ -1,12 +1,10 @@
 const log = require('@helpers/logger')
-const axios = require('axios')
 
 /**
  * Retorna todas as intenções da planilha
  */
-async function getIntentsFromSheet() {
+function processIntents(data) {
 	let unnamedCount = 0
-	const { data } = await axios.get(process.env.SHEETDB_API)
 
 	const intents = []
 	for (const rawIntent of data) {
@@ -39,7 +37,7 @@ async function getIntentsFromSheet() {
 
 		// Exclui se não possui frases de treinamento e respostas
 		if (!intent.trainingPhrases.length && !intent.responses.length) continue
-		
+
 		intents.push(intent)
 	}
 
@@ -47,4 +45,4 @@ async function getIntentsFromSheet() {
 	return intents
 }
 
-module.exports = getIntentsFromSheet
+module.exports = processIntents

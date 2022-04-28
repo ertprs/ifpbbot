@@ -67,7 +67,7 @@ Caso você queira, você pode restringir o acesso do robô a determinados contat
 
 ## 4. Configuração do Planilhas Google
 > Se você não quiser usar o Planilhas Google, use a variável `DISABLE_GOOGLE_SHEETS` e pule esta etapa
-* Defina a variável `SHEETDB_API` com a chave de API do SheetDB.
+* _Instruções disponíveis em breve_
 
 <br>
 
