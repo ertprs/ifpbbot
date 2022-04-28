@@ -51,8 +51,8 @@ async function parseMessages(responses, ctx) {
  * @param {Context} ctx - Contexto da biblioteca
  */
 async function parseResponse(msg, ctx) {
-	const forceReply = ctx.chat.type === 'supergroup' ? { force_reply: true } : {}
-	const replyMarkup = ctx.chat.type === 'supergroup' ? { reply_markup: { ...forceReply } } : undefined
+	const forceReply = ctx.chat.type.includes('group') ? { force_reply: true } : {}
+	const replyMarkup = ctx.chat.type.includes('group') ? { reply_markup: { ...forceReply } } : undefined
 
 	switch (msg.type.toLowerCase().trim()) {
 		case 'text':
@@ -62,7 +62,7 @@ async function parseResponse(msg, ctx) {
 			await ctx.replyWithMarkdown(msg.prompt || '', {
 				reply_markup: {
 					...forceReply,
-					inline_keyboard: msg.options.map(opt => [{
+					inline_keyboard: msg.options.map((opt) => [{
 						text: opt.text, callback_data: opt.text
 					}])
 				}
