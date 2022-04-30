@@ -1,4 +1,5 @@
 const log = require('@helpers/logger')
+require('@helpers/database')
 
 class RemoteSessions {
 	constructor(saveTime = 30000) {

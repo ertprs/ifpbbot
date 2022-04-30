@@ -1,13 +1,7 @@
-const { DataTypes } = require('sequelize')
-const sequelize = require('@helpers/database')
+const mongoose = require('mongoose')
 
-const Sessions = sequelize.define('Sessions', {
-	data: {
-		type: DataTypes.JSON,
-		allowNull: false
-	}
+const schema = new mongoose.Schema({
+	data: Object
 })
 
-Sessions.sync()
-
-module.exports = Sessions
+module.exports = mongoose.model('Sessions', schema)

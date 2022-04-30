@@ -5,7 +5,7 @@ const { value } = require('pb-util')
 const setContexts = require('./set-df-contexts')
 const LocalSessions = require('./LocalSessions')
 const RemoteSessions = require('./RemoteSessions')
-const sessions = process.env.DB_NAME && process.env.DB_USERNAME && process.env.DB_HOST
+const sessions = process.env.MONGO_DB
 	? new RemoteSessions()
 	: new LocalSessions(path.resolve(__dirname, './df-sessions.json'))
 

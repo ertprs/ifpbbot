@@ -72,7 +72,7 @@ function parseResponse(msg, client) {
 		case 'file':
 			return {
 				content: MessageMedia.fromUrl(msg.url, { unsafeMime: true }).then(file => {
-					file.filename = msg.name
+					file.filename = msg.name || ('arquivo-' + new Date().toISOString())
 					return file
 				})
 			}

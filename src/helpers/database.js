@@ -1,24 +1,29 @@
-const Sequelize = require('sequelize')
+const mongoose = require('mongoose')
 const log = require('@helpers/logger')
 
-if (!process.env.DB_NAME || !process.env.DB_USERNAME || !process.env.DB_HOST) {
-	log('redBright', 'Erro')('Credenciais do banco de dados MySQL faltando')
-	throw new Error('Credenciais do banco de dados MySQL faltando')
+if (!process.env.MONGO_DB) {
+	log('redBright', 'Erro')('Credenciais do banco de dados MongoDB faltando')
+	throw new Error('Credenciais do banco de dados MongoDB faltando')
 }
 
-const sequelize = new Sequelize(
-	process.env.DB_NAME,
-	process.env.DB_USERNAME,
-	process.env.DB_PASSWORD,
-	{
-		host: process.env.DB_HOST,
-		dialect: 'mysql',
-		logging: false
-	}
-)
+let mongoDBURL = process.env.MONGO_DB || 'mongodb://localhost'
 
-sequelize.authenticate()
-	.then(() => log('greenBright', 'MySQL')('Conectado'))
-	.catch((err) => log('redBright', 'MySQL')('Falha ao conectar', err))
+mongoose.connection.on('connecting', () => log('yellowBright', 'MongoDB')('Conectando...'))
+mongoose.connection.on('connected', () => log('greenBright', 'MongoDB')('Conectado'))
+mongoose.connection.on('disconnected', () => log('redBright', 'MongoDB')('Desconectado'))
+mongoose.connection.on('error', (err) => {
+	log('redBright', 'MongoDB')('Falha ao conectar', err)
+	setTimeout(mongoConnect, 5000)
+})
 
-module.exports = sequelize
+function mongoConnect() {
+	mongoose.connect(mongoDBURL, {
+		useNewUrlParser: true,
+		useUnifiedTopology: true
+	}).catch(() => { })
+}
+
+mongoConnect()
+
+require('@models/Sessions')
+require('@models/Teacher')
