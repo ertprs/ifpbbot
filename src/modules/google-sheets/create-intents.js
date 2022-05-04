@@ -14,11 +14,22 @@ async function createIntents(intents) {
 		const intent = intents[i]
 		const parent = intentsClient.projectAgentPath(projectId)
 
-		intent.messages = intent.messages.map((message) => {
-			if (message.payload) {
-				message.payload = value.encode(message.payload).structValue
+		intent.trainingPhrases = intent.trainingPhrases.map((phrase) => {
+			return {
+				type: 'EXAMPLE',
+				parts: [{ text: phrase }]
 			}
-			return message
+		})
+
+		intent.messages = intent.messages.map((message) => {
+			console.log(message)
+			if (message.type === 'text') {
+				return { text: { text: message.text } }
+			} else {
+				return {
+					payload: value.encode({ richContent: [[message]] }).structValue
+				}
+			}
 		})
 
 		const [response] = await intentsClient.createIntent({ parent, intent })

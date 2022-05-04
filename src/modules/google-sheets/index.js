@@ -6,6 +6,7 @@ const express = require('express')
 const basicAuth = require('express-basic-auth')
 const router = express.Router()
 
+const parseIntents = require('./parse-intents')
 const listIntents = require('./list-intents')
 const deleteIntents = require('./delete-intents')
 const createIntents = require('./create-intents')
@@ -15,11 +16,12 @@ if (process.env.GOOGLE_SHEETS_USERS) router.use(basicAuth({
 	unauthorizedResponse: () => 'Você não tem autorização para utilizar este servidor'
 }))
 
-router.post('/updateDialogflow', async (req, res) => {
+router.post('/dialogflow/syncIntents', async (req, res) => {
 	try {
 		const startTime = Date.now()
 
-		const intents = req.body.intents
+		const intents = parseIntents(req.body.data)
+		console.log(JSON.stringify(intents, null, '  '))
 		const currentIntents = await listIntents()
 		await deleteIntents(currentIntents)
 		await createIntents(intents)
