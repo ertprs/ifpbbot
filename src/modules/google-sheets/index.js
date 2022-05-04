@@ -19,10 +19,11 @@ if (process.env.GOOGLE_SHEETS_USERS) router.use(basicAuth({
 router.post('/dialogflow/syncIntents', async (req, res) => {
 	try {
 		const startTime = Date.now()
+		let { data, sheetID } = req.body
+		sheetID = sheetID || Math.floor(Math.random() * 9999).toString()
 
-		const intents = parseIntents(req.body.data)
-		console.log(JSON.stringify(intents, null, '  '))
-		const currentIntents = await listIntents()
+		const intents = parseIntents(data, sheetID)
+		const currentIntents = await listIntents(sheetID)
 		await deleteIntents(currentIntents)
 		await createIntents(intents)
 

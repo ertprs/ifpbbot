@@ -5,7 +5,7 @@ const { groupSameTypeResponses } = require('./helpers')
  * Retorna um array de intenções no formato do IFPBBot
  * Veja o arquivo: /src/dialogflow/README.md
  */
-function parseIntents(data) {
+function parseIntents(data, sheetID) {
 	// Número de intenções sem nome
 	let unnamedCount = 0
 
@@ -43,7 +43,7 @@ function parseIntents(data) {
 
 		// Adiciona prefixo no nome e remove frases vazias
 		intent.displayName = intent.displayName.trim() || '~.' + (++unnamedCount).toString().padStart(3, 0)
-		intent.displayName = '~planilha.' + intent.displayName
+		intent.displayName = `~${sheetID}.` + intent.displayName
 		intent.trainingPhrases = intent.trainingPhrases.filter(a => a.trim())
 
 		// Agrupa respostas com suas variações

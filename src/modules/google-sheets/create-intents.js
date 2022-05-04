@@ -22,7 +22,6 @@ async function createIntents(intents) {
 		})
 
 		intent.messages = intent.messages.map((message) => {
-			console.log(message)
 			if (message.type === 'text') {
 				return { text: { text: message.text } }
 			} else {
