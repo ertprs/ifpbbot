@@ -10,7 +10,7 @@ function optionsList(msg) {
 	if (msg.body) text += '\n' + msg.body + '\n'
 
 	for (const section of msg.sections) {
-		text += '\n────────────────────\n'
+		text += '\n───────────────\n'
 		text += `*${section.title}*\n`
 
 		for (const row of section.rows) {
@@ -20,7 +20,7 @@ function optionsList(msg) {
 	}
 
 	if (msg.footer) {
-		text += '\n────────────────────\n'
+		text += '\n───────────────\n'
 		text += `\n_${msg.footer}_`
 	}
 

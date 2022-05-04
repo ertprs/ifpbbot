@@ -59,7 +59,7 @@ async function parseResponse(msg, ctx) {
 			if (msg.text) await ctx.replyWithMarkdown(msg.text, replyMarkup)
 			break
 		case 'chips':
-			await ctx.replyWithMarkdown(msg.prompt || '', {
+			await ctx.replyWithMarkdown(msg.prompt || 'Selecione uma opção:', {
 				reply_markup: {
 					...forceReply,
 					inline_keyboard: msg.options.map((opt) => [{

@@ -6,7 +6,6 @@ const express = require('express')
 const basicAuth = require('express-basic-auth')
 const router = express.Router()
 
-const processIntents = require('./process-intents')
 const listIntents = require('./list-intents')
 const deleteIntents = require('./delete-intents')
 const createIntents = require('./create-intents')
@@ -21,14 +20,13 @@ router.post('/updateDialogflow', async (req, res) => {
 		const startTime = Date.now()
 
 		const intents = req.body.intents
-		const newIntents = processIntents(intents)
 		const currentIntents = await listIntents()
 		await deleteIntents(currentIntents)
-		await createIntents(newIntents)
+		await createIntents(intents)
 
 		res.json({
 			success: true,
-			addedIntents: newIntents.length,
+			addedIntents: intents.length,
 			removedIntents: currentIntents.length,
 			time: Date.now() - startTime
 		})
