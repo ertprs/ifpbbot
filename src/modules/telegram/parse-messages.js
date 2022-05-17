@@ -39,8 +39,8 @@ async function parseMessages(responses, ctx) {
 
 	// Converte as respostas para o formato da biblioteca Telegraf
 	responses = responses.flat().filter(msg => msg)
-	for (const response of responses) {
-		await parseResponse(response, ctx)
+	for (const [i, response] of Object.entries(responses)) {
+		await parseResponse(response, ctx, i, responses)
 	}
 }
 
@@ -50,9 +50,10 @@ async function parseMessages(responses, ctx) {
  * @param {object} msg - Mensagem de resposta do Dialogflow
  * @param {Context} ctx - Contexto da biblioteca
  */
-async function parseResponse(msg, ctx) {
-	const forceReply = ctx.chat.type.includes('group') ? { force_reply: true } : {}
-	const replyMarkup = ctx.chat.type.includes('group') ? { reply_markup: { ...forceReply } } : undefined
+async function parseResponse(msg, ctx, i, responses) {
+	const isGroup = ctx.chat.type.includes('group')
+	const forceReply = isGroup ? { force_reply: true, input_field_placeholder: 'Responda ao ChatBot', selective: true } : {}
+	const replyMarkup = isGroup ? { reply_markup: { ...forceReply }, reply_to_message_id: ctx.message?.message_id } : undefined
 
 	switch (msg.type.toLowerCase().trim()) {
 		case 'text':
