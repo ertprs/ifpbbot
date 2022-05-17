@@ -1,5 +1,6 @@
 const path = require('path')
 const { jsonParse, randomItem } = require('@helpers/helpers')
+const log = require('@helpers/logger')
 const dialogflow = require('@google-cloud/dialogflow')
 const { value } = require('pb-util')
 const setContexts = require('./set-df-contexts')
@@ -21,57 +22,63 @@ const CREDENTIALS = jsonParse(process.env.GCLOUD_CREDENTIALS)
  * @returns {Promise<{ responses: object[] }>} Retorna as respostas do Dialogflow
  */
 async function getDFResponse(text, from, platform = '') {
-	from = platform + from
+	try {
+		from = platform + from
 
-	// Cria ou retoma as sessões remotas
-	const sessionClient = new dialogflow.SessionsClient({
-		credentials: CREDENTIALS
-	})
+		// Cria ou retoma as sessões remotas
+		const sessionClient = new dialogflow.SessionsClient({
+			credentials: CREDENTIALS
+		})
 
-	const sessionPath = sessionClient.projectAgentSessionPath(
-		process.env.PROJECT_ID, from
-	)
+		const sessionPath = sessionClient.projectAgentSessionPath(
+			process.env.PROJECT_ID, from
+		)
 
-	// Cria uma nova sessão caso não exista
-	if (!sessions.data[from]) sessions.data[from] = {
-		lastMessageDate: Date.now(),
-		contexts: []
-	}
+		// Cria uma nova sessão caso não exista
+		if (!sessions.data[from]) sessions.data[from] = {
+			lastMessageDate: Date.now(),
+			contexts: []
+		}
 
-	// Se a última mensagem da pessoa foi há mais de 5 minutos, define os contextos no Dialogflow
-	if (Date.now() - sessions.data[from].lastMessageDate > 300000) {
-		await setContexts(sessions.data[from].contexts, sessionPath)
-	}
+		// Se a última mensagem da pessoa foi há mais de 5 minutos, define os contextos no Dialogflow
+		if (Date.now() - sessions.data[from].lastMessageDate > 300000) {
+			await setContexts(sessions.data[from].contexts, sessionPath)
+		}
 
-	// Faz um request para o servidor do Dialogflow
-	const request = {
-		session: sessionPath,
-		queryInput: {
-			text: {
-				text: text,
-				languageCode: 'pt-BR'
+		// Faz um request para o servidor do Dialogflow
+		const request = {
+			session: sessionPath,
+			queryInput: {
+				text: {
+					text: text,
+					languageCode: 'pt-BR'
+				}
 			}
 		}
+
+		const [response] = await sessionClient.detectIntent(request)
+		const contexts = response.queryResult.outputContexts
+
+		// Atualiza as sessões
+		sessions.data[from].contexts = contexts
+		sessions.data[from].lastMessageDate = Date.now()
+
+		// Converte as respostas em formato de String e Payload em Objeto
+		const responses = response.queryResult.fulfillmentMessages
+			.map(parseResponse)
+			.flat()
+			.filter(filterInvalidResponses)
+			.map(parseRandomResponses)
+			.flat()
+			.filter(filterInvalidResponses)
+
+		// Retorna as respostas do Dialogflow
+		return responses
+	} catch (err) {
+		// Erro ao analisar respostas do Dialogflow
+		log('redBright', 'Dialogflow')('Erro ao analisar respostas:', err)
+		return [{ type: 'text', text: '🪳 _Desculpe! Ocorreu um erro ao analisar as respostas da intenção, por favor contate o administrador_' }]
 	}
-
-	const [response] = await sessionClient.detectIntent(request)
-	const contexts = response.queryResult.outputContexts
-
-	// Atualiza as sessões
-	sessions.data[from].contexts = contexts
-	sessions.data[from].lastMessageDate = Date.now()
-
-	// Converte as respostas em formato de String e Payload em Objeto
-	const responses = response.queryResult.fulfillmentMessages
-		.map(parseResponse)
-		.flat()
-		.filter(filterInvalidResponses)
-		.map(parseRandomResponses)
-		.flat()
-		.filter(filterInvalidResponses)
-
-	// Retorna as respostas do Dialogflow
-	return responses
 }
 
 // Converte as respostas do formato do Dialogflow para objetos comuns

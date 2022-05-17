@@ -10,37 +10,47 @@ const optionsList = require('@helpers/options-list')
  * @param {Context} ctx - Contexto da biblioteca 
  */
 async function parseMessages(responses, ctx) {
-	for (const i in responses) {
-		const msg = responses[i]
+	try {
+		for (const i in responses) {
+			const msg = responses[i]
 
-		// Remove as respostas com o parâmetro "ignoreWhatsApp"
-		if (msg.ignoreTelegram || msg.ignoretelegram) {
-			responses[i] = null
-			continue
+			// Remove as respostas com o parâmetro "ignoreWhatsApp"
+			if (msg.ignoreTelegram || msg.ignoretelegram) {
+				responses[i] = null
+				continue
+			}
+
+			// Converte links de Chips para texto
+			if (msg.type === 'chips' && msg.options.some(o => o.link)) {
+				responses[i] = msg.options.map(o => ({
+					type: 'text',
+					text: `*${o.text}*\n${o.link || ''}`
+				}))
+			}
+
+			// Une respostas com Chips e com Texto
+			if (msg.type === 'chips' && i - 1 >= 0 && responses[i - 1].type === 'text') {
+				msg.prompt = responses[i - 1].text
+				responses[i - 1] = null
+			}
 		}
 
-		// Converte links de Chips para texto
-		if (msg.type === 'chips' && msg.options.some(o => o.link)) {
-			responses[i] = msg.options.map(o => ({
-				type: 'text',
-				text: `*${o.text}*\n${o.link || ''}`
-			}))
+		// Printa as respostas no ambiente de desenvolvimento
+		log('cyan', 'Telegram', true)(responses)
+
+		// Converte as respostas para o formato da biblioteca Telegraf
+		responses = responses.flat().filter(msg => msg)
+		for (const [i, response] of Object.entries(responses)) {
+			await parseResponse(response, ctx, i, responses).catch((err) => {
+				// Erro ao enviar mensagem
+				log('redBright', 'Telegram')('Erro ao analisar mensagem:', err, response)
+				ctx.replyWithMarkdown('🪳 _Ocorreu um erro ao enviar esta mensagem_')
+			})
 		}
-
-		// Une respostas com Chips e com Texto
-		if (msg.type === 'chips' && i - 1 >= 0 && responses[i - 1].type === 'text') {
-			msg.prompt = responses[i - 1].text
-			responses[i - 1] = null
-		}
-	}
-
-	// Printa as respostas no ambiente de desenvolvimento
-	log('cyan', 'Telegram', true)(responses)
-
-	// Converte as respostas para o formato da biblioteca Telegraf
-	responses = responses.flat().filter(msg => msg)
-	for (const [i, response] of Object.entries(responses)) {
-		await parseResponse(response, ctx, i, responses)
+	} catch (err) {
+		// Erro ao analisar mensagens
+		log('redBright', 'Telegram')('Erro ao analisar mensagens:', err, responses)
+		ctx.replyWithMarkdown('🪳 _Desculpe! Ocorreu um erro ao analisar as mensagens_')
 	}
 }
 

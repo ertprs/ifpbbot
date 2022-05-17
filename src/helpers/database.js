@@ -3,7 +3,6 @@ const log = require('@helpers/logger')
 
 if (!process.env.MONGO_DB) {
 	log('redBright', 'Erro')('Credenciais do banco de dados MongoDB faltando')
-	throw new Error('Credenciais do banco de dados MongoDB faltando')
 }
 
 let mongoDBURL = process.env.MONGO_DB || 'mongodb://localhost'
