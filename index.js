@@ -12,6 +12,7 @@ let error = false
 const MODULES = ([
 	// Caminho do módulo; Desabilitar; Mensagem de desabilitado
 	['whatsapp', process.env.DISABLE_WHATSAPP, 'Robô do WhatsApp desativado por variável de ambiente'],
+	['whatsapp2', process.env.DISABLE_WHATSAPP2, 'Robô do WhatsApp (2) desativado por variável de ambiente'],
 	['telegram', process.env.DISABLE_TELEGRAM, 'Robô do Telegram desativado por variável de ambiente'],
 	['google-sheets', process.env.DISABLE_GOOGLE_SHEETS, 'Integração com Planilhas Google desativado por variável de ambiente'],
 	['webhook', process.env.DISABLE_WEBHOOK, 'Servidor webhook desativado por variável de ambiente'],
