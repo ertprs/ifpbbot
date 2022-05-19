@@ -154,9 +154,8 @@ Envia uma figurinha
 > O Telegram não suporta figurinhas animadas
 ```json
 {
-  "type": "file",
-  "url": "URL do arquivo",
-  "name": "Nome do arquivo" // Opcional
+  "type": "sticker",
+  "url": "URL da imagem"
 }
 ```
 
@@ -191,7 +190,7 @@ Reage à mensagem anterior<br>
 ```json
 {
   "type": "reaction",
-	"emoji": "❤"
+  "emoji": "❤"
 }
 ```
 

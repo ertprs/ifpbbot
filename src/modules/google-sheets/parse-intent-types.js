@@ -35,23 +35,38 @@ function parseIntentTypes(intent, columnName, cellValue) {
 
 	} else if (includes(columnName, ['imagem', 'image', 'foto', 'photo', 'picture'])) {
 		// Imagem
+		const [url, caption] = cellValue.split('|')
 		intent.messages.push({
 			type: 'image',
-			rawUrl: cellValue
+			rawUrl: url,
+			accessibilityText: caption
 		})
 
 	} else if (includes(columnName, ['arquivo', 'file', 'documento'])) {
 		// Arquivo
+		const [url, name] = cellValue.split('|')
 		intent.messages.push({
 			type: 'file',
-			url: cellValue
+			url: url,
+			name: name
 		})
-
 	} else if (includes(columnName, ['botao', 'button', 'chips'])) {
 		// Chips
 		intent.messages.push({
 			type: 'chips',
 			options: [{ text: cellValue }]
+		})
+	} else if (includes(columnName, ['figura', 'figurinha', 'sticker'])) {
+		// Figurinha
+		intent.messages.push({
+			type: 'sticker',
+			url: cellValue
+		})
+	} else if (includes(columnName, ['reacao', 'reaction'])) {
+		// Reação
+		intent.messages.push({
+			type: 'reaction',
+			emoji: cellValue
 		})
 	}
 }
