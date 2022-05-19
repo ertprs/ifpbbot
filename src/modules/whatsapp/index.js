@@ -52,8 +52,10 @@ async function connectToWhatsApp() {
 		if (type !== 'notify') return
 
 		for (const msg of messages) {
-			// Impede de receber mensagens de outros remetentes (temporário)
-			if (!(process.env.WHATSAPP_ALLOWED_CONTACTS || '').split(',').includes(msg.key.remoteJid)) continue
+			// Impede de receber mensagens de outros remetentes
+			if (process.env.WHATSAPP_ALLOWED_NUMBERS) {
+				if (!process.env.WHATSAPP_ALLOWED_NUMBERS.split(',').includes(msg?.key?.remoteJid)) continue
+			}
 
 			log('cyan', 'WhatsApp', true)('Nova mensagem', `(${type})`, JSON.stringify(messages, null, 2))
 
