@@ -14,7 +14,6 @@ const CREDENTIALS = jsonParse(process.env.GCLOUD_CREDENTIALS)
 
 /**
  * Faz uma requisição para o Dialogflow
- * 
  * @async
  * @param {string} text - Texto da mensagem recebida
  * @param {string} from - ID único do chat ou contato da mensagem recebida

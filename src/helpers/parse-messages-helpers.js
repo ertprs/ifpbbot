@@ -1,6 +1,5 @@
 /**
  * Converte uma mensagem do tipo option_list para texto comum
- * 
  * @param {object} msg - Mensagem do Dialogflow
  * @returns {string} Mensagem no formato de texto
  */

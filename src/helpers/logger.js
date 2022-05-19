@@ -2,7 +2,6 @@ const chalk = require('chalk')
 
 /**
  * Prepara um função para imprimir logs formatados no console
- * 
  * @param {chalk.ForegroundColor} color - Cor do texto a ser impresso
  * @param {string} title - Título do log
  * @param {boolean} onlyDevelopment - Imprime apenas se estiver no ambiente de desenvolvimento
@@ -17,7 +16,6 @@ function log(color, title, onlyDevelopment = false) {
 
 	/**
 	 * Imprime os logs formatados no console
-	 * 
 	 * @param {...string} contents
 	 */
 	return (...contents) => {

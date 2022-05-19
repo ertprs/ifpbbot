@@ -5,7 +5,6 @@ const CREDENTIALS = jsonParse(process.env.GCLOUD_CREDENTIALS)
 
 /**
  * Atualiza os contextos expirados no Dialogflow
- * 
  * @async
  * @param {object[]} contexts - Array de contextos
  * @param {string} sessionPath - Caminho da sessão

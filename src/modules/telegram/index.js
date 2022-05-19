@@ -54,7 +54,8 @@ if (process.env.TELEGRAM_WEBHOOK_URL) {
 	const webhookPath = new URL(process.env.TELEGRAM_WEBHOOK_URL).pathname
 	bot.telegram.setWebhook(webhookURL).then((s) => !s && start())
 	app.use(bot.webhookCallback(webhookPath))
-	log('greenBright', 'Telegram')('Servidor Webhook aberto')
+	const PORT = process.env.PORT || 443
+	log('greenBright', 'Telegram')(`Servidor Webhook aberto na porta ${PORT}`)
 } else {
 	start()
 }

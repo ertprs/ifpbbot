@@ -41,6 +41,8 @@ router.post('/', async (req, res) => {
 })
 
 app.use('/webhook', router)
-log('greenBright', 'Webhook')('Servidor aberto')
+
+const PORT = process.env.PORT || 443
+log('greenBright', 'Webhook')(`Servidor aberto na porta ${PORT} na rota /webhook`)
 
 module.exports = router

@@ -3,7 +3,6 @@ const { includes } = require('./helpers')
 /**
  * Converte a intenção do formato de texto para objeto do IFPBBot
  * Veja o arquivo: /src/dialogflow/README.md
- * 
  * @param {object} intent - Objeto da intenção
  * @param {string} columnName - Nome da coluna
  * @param {string} cellValue - Valor da célula

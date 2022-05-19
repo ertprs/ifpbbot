@@ -7,6 +7,7 @@ const router = express.Router()
 router.use(express.static(__dirname + '/public'))
 app.use('/', router)
 
-log('greenBright', 'Site')('Servidor aberto')
+const PORT = process.env.PORT || 443
+log('greenBright', 'Site')(`Servidor aberto na porta ${PORT}`)
 
 module.exports = router

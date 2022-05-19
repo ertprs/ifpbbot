@@ -41,6 +41,7 @@ router.post('/dialogflow/syncIntents', async (req, res) => {
 
 app.use('/googleSheets', router)
 
-log('greenBright', 'Planilhas Google')('Servidor aberto')
+const PORT = process.env.PORT || 443
+log('greenBright', 'Planilhas Google')(`Servidor aberto na porta ${PORT} na rota /googleSheets`)
 
 module.exports = router

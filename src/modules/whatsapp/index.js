@@ -1,123 +1,114 @@
 require('dotenv/config')
 require('module-alias/register')
-const path = require('path')
-const qrcode = require('qrcode-terminal')
-const { Client, LocalAuth } = require('whatsapp-web.js')
-const ChromeLauncher = require('chrome-launcher')
+const makeWASocket = require('@adiwajshing/baileys').default
+const { useSingleFileAuthState } = require('@adiwajshing/baileys')
 const log = require('@helpers/logger')
-const { isDisabled } = require('@helpers/helpers')
+const pino = require('pino')
 const getDFResponse = require('@dialogflow/get-df-response')
-const { load: loadWWebJSBackup, save: saveWWebJSBackup } = require('./backup-data')
 const parseMessages = require('./parse-messages')
-let chromePath
-try { chromePath = ChromeLauncher.Launcher.getInstallations()[0] } catch { }
+const useRemoteAuthState = require('./remote-state')
 
-async function start() {
-	// if (
-	// 	process.env.GOOGLE_CLIENT_ID &&
-	// 	process.env.GOOGLE_CLIENT_SECRET &&
-	// 	process.env.GOOGLE_REDIRECT_URI &&
-	// 	process.env.GOOGLE_REFRESH_TOKEN
-	// ) {
-	// 	await loadWWebJSBackup()
-	// }
+// Desabilita os logs padrão
+const Logger = pino().child({})
+Logger.level = 'silent'
 
-	const client = new Client({
-		authStrategy: new LocalAuth({
-			dataPath: path.join(__dirname, '.wwebjs_auth')
-		}),
-		puppeteer: {
-			executablePath: chromePath,
-			args: ['--no-sandbox'],
-			headless: !isDisabled(process.env.SHOW_WHATSAPP_BROWSER)
-		}
+// Armazenamento de estado do WhatsApp no banco de dados
+const remote = useRemoteAuthState('./whatsapp_auth.json')
+
+async function connectToWhatsApp() {
+	// Carrega o estado do WhatsApp no banco de dados
+	if (process.env.MONGO_DB) await remote.loadState()
+	const local = useSingleFileAuthState('./whatsapp_auth.json')
+
+	const client = makeWASocket({
+		printQRInTerminal: true,
+		logger: Logger,
+		auth: local.state
 	})
 
 	// Página de teste do WhatsApp
 	if (process.env.NODE_ENV === 'development') {
-		require('./test-messages')(client)
+		require('./test-messages')(client, local.state?.creds?.me?.id)
 	}
 
-	// setInterval(() => saveWWebJSBackup(client), 120000)
-	log('yellowBright', 'WhatsApp')('Conectando, aguarde...')
-
-	// Falha na autenticação
-	client.on('auth_failure', () => {
-		log('redBright', 'WhatsApp')('Falha na autenticação')
-	})
-
-	// Desconectado
-	client.on('disconnected', () => {
-		log('redBright', 'WhatsApp')('Desconectado')
-	})
-
-	// Imprime o QR Code
-	client.on('qr', (qr) => {
-		log('cyanBright', 'WhatsApp')('Escaneie o QR Code no seu WhatsApp\n')
-		qrcode.generate(qr, { small: true })
-	})
-
-	// Conectado
-	client.on('ready', () => {
-		log('greenBright', 'WhatsApp')('Servidor aberto')
-	})
-
-	// Nova mensagem
-	client.on('message', async (msg) => {
-		// Permite apenas alguns contatos (para testes)
-		if (process.env.WHATSAPP_ALLOWED_NUMBERS) {
-			if (!process.env.WHATSAPP_ALLOWED_NUMBERS.split(',').includes(msg.from)) return
+	// Observa mudanças na conexão com o WhatsApp
+	client.ev.on('connection.update', ({ connection, lastDisconnect }) => {
+		if (connection === 'close') {
+			log('redBright', 'WhatsApp')(
+				'Conexão fechada, motivo:',
+				lastDisconnect?.error?.output?.payload?.error, '-',
+				lastDisconnect?.error?.output?.payload?.message, '-',
+				lastDisconnect?.error?.output?.statusCode
+			)
+			setTimeout(connectToWhatsApp, 10000)
+		} else if (connection === 'open') {
+			log('greenBright', 'WhatsApp')('Conexão aberta')
 		}
-
-		const chat = msg.getChat()
-
-		// Ativa o estado "Digitando..."
-		chat.then(c => c.sendStateTyping())
-
-		if (msg.hasMedia) {
-			return await client
-				.sendMessage(msg.from, '🤷‍♂️ Desculpe, infelizmente não consigo entender áudios e outros arquivos')
-				.catch(console.error)
-		}
-
-		// Retorna a resposta do DialogFlow
-		getDFResponse(msg.body, msg.from, 'whatsapp')
-			.then((r) => parseMessages(r, client))
-			.then((m) => sendMessages(m, client, msg))
-			.catch((e) => error(e, msg))
-			.finally(() => {
-				// Desativa o estado "Digitando..."
-				chat.then(c => c.clearState())
-			})
 	})
 
-	// Envia as mensagens
-	async function sendMessages(msgs, client, msg) {
-		for (let res of msgs) {
-			// Se a mensagem for uma Promise
-			if (res && res.content && res.content.then) res.content = await res.content.catch((err) => {
+	// Mensagens recebidas
+	client.ev.on('messages.upsert', async ({ messages, type }) => {
+		// Responde apenas a novas mensagens
+		if (type !== 'notify') return
+
+		for (const msg of messages) {
+			// Impede de receber mensagens de outros remetentes (temporário)
+			if (!(process.env.WHATSAPP_ALLOWED_CONTACTS || '').split(',').includes(msg.key.remoteJid)) continue
+
+			log('cyan', 'WhatsApp', true)('Nova mensagem', `(${type})`, JSON.stringify(messages, null, 2))
+
+			// Impede de responder suas próprias mensagens (participant significa que foi de um grupo)
+			if (!msg.participant && msg.fromMe) continue
+
+			// Texto da mensagem
+			const msgText = msg?.message?.conversation || // Mensagem normal
+				msg?.message?.templateButtonReplyMessage?.selectedDisplayText || // Mensagem do botão de template
+				msg?.message?.extendedTextMessage?.text || // ???
+				msg?.message?.buttonsResponseMessage?.selectedDisplayText || // Mensagem do botão
+				msg?.message?.listResponseMessage?.title // Mensagem de uma lista de respostas
+
+			// Pula mensagens inválidas
+			if (!msg?.message || !msgText) continue
+
+			try {
+				// Marca a mensagem como lida
+				client.readMessages([msg?.key])
+				// Adiciona o status "Digitando..."
+				client.sendPresenceUpdate('composing', msg?.key?.remoteJid)
+
+				// Retorna as respostas do Dialogflow
+				const dialogflowResponse = await getDFResponse(
+					msgText,
+					msg?.key?.remoteJid + (msg?.key?.participant || ''),
+					'whatsapp'
+				)
+
+				// Transforma as mensagens do formato do Dialogflow em mensagens do WhatsApp
+				const parsedMessages = parseMessages(dialogflowResponse, msg)
+
+				for (const parsedMessage of parsedMessages) {
+					// Envia a resposta
+					await client.sendMessage(msg?.key?.remoteJid, parsedMessage).catch(console.error)
+				}
+
+				// Remove o status "Digitando..."
+				client.sendPresenceUpdate('paused', msg?.key?.remoteJid)
+
+			} catch (err) {
+				// Ao ocorrer um erro
 				console.error(err)
-				return null
-			})
-
-			// Envia apenas se a mensagem for válida
-			if (res && res.content) await client.sendMessage(msg.from, res.content, res.options).catch(console.error)
+				await client.sendMessage(msg.key.remoteJid, { text: '🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_' })
+			}
 		}
-	}
+	})
 
-	// Executa caso ocorra algum erro
-	function error(err, msg) {
-		console.error(err)
-		client.sendMessage(msg.from, 'Ops! Ocorreu um problema técnico, peço desculpas').catch(console.error)
-	}
-
-	// Inicia o servidor
-	client.initialize()
+	client.ev.on('creds.update', () => {
+		// Salva o estado do WhatsApp localmente e no banco de dados
+		local.saveState()
+		remote.saveState()
+	})
 
 	return client
 }
 
-// Evita que o servidor feche quando ocorrer um erro
-process.on('uncaughtException', console.error)
-
-module.exports = start()
+connectToWhatsApp()

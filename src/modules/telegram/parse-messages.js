@@ -56,7 +56,6 @@ async function parseMessages(responses, ctx) {
 
 /**
  * Converte uma resposta para o formato da biblioteca telegraf
- * 
  * @param {object} msg - Mensagem de resposta do Dialogflow
  * @param {Context} ctx - Contexto da biblioteca
  */

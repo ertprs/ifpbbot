@@ -9,11 +9,15 @@
     "lint": "eslint src/**/*.js",
     "lint:fix": "eslint src/**/*.js --fix",
     "whatsapp": "node src/modules/whatsapp",
-    "whatsapp2": "node src/modules/whatsapp2",
+    "whatsapp:dev": "cross-env NODE_ENV=development node src/modules/whatsapp",
     "telegram": "node src/modules/telegram",
+    "telegram:dev": "cross-env NODE_ENV=development node src/modules/telegram",
     "googleSheets": "node src/modules/google-sheets",
+    "googleSheets:dev": "cross-env NODE_ENV=development node src/modules/google-sheets",
     "webhook": "node src/modules/webhook",
-    "site": "node src/modules/site"
+    "webhook:dev": "cross-env NODE_ENV=development node src/modules/webhook",
+    "site": "node src/modules/site",
+    "site:dev": "cross-env NODE_ENV=development node src/modules/site"
   },
   "keywords": [],
   "author": "Jefferson Dantas",

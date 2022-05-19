@@ -1,4 +1,9 @@
-module.exports = (client) => {
+/**
+ * Cria um servidor para testes de WhatsApp
+ * @param {object} client - Cliente do Baileys
+ * @param {string} chatID - ID do seu prório chat
+ */
+module.exports = (client, chatID = '') => {
 	const express = require('express')
 	const router = express.Router()
 	const app = require('@helpers/http')
@@ -14,36 +19,26 @@ module.exports = (client) => {
 	router.post('/send', async (req, res) => {
 		res.redirect('/whatsapp')
 
-		const chatID = client && client.info && client.info.wid && client.info.wid._serialized
-		const message = req.body.message
-
-		await client.sendMessage(chatID, `*(VOCÊ)*\n${message}`).catch(console.error)
+		const messageText = req.body.message
+		const message = await client.sendMessage(chatID, { text: `*(VOCÊ)*\n${messageText}` }).catch(console.error)
 
 		// Retorna a resposta do DialogFlow
-		getDFResponse(message, chatID, 'whatsapp-test')
-			.then((r) => parseMessages(r, client))
-			.then((m) => sendMessages(m, client, chatID))
+		getDFResponse(messageText, chatID, 'whatsapp-test')
+			.then((r) => parseMessages(r, message))
+			.then((m) => sendMessages(m, client, message))
 			.catch((e) => error(e, chatID))
 	})
 
 	app.use('/whatsapp', router)
-	log('greenBright', 'WhatsApp')('Servidor de testes aberto')
+
+	const PORT = process.env.PORT || 443
+	log('greenBright', 'WhatsApp')(`Servidor de testes aberto na porta ${PORT} na rota /whatsapp`)
 
 	// Envia as mensagens
-	async function sendMessages(msgs, client, id) {
-		for (let res of msgs) {
-			// Se a mensagem for uma Promise
-			if (res && res.content && res.content.then) {
-				res.content = await res.content.catch((err) => {
-					console.error(err)
-					return null
-				})
-			}
-
-			// Envia apenas se a mensagem for válida
-			if (res && res.content) {
-				await client.sendMessage(id, res.content, res.options).catch(console.error)
-			}
+	async function sendMessages(parsedMessages, client, msg) {
+		for (const parsedMessage of parsedMessages) {
+			// Envia a resposta
+			await client.sendMessage(msg?.key?.remoteJid, parsedMessage).catch(console.error)
 		}
 	}
 
