@@ -42,13 +42,13 @@ function parseIntents(data, sheetID) {
 		}
 
 		// Adiciona prefixo no nome e remove frases vazias
-		intent.displayName = intent.displayName.trim() || '~.' + (++unnamedCount).toString().padStart(3, 0)
-		intent.displayName = `~${sheetID}.` + intent.displayName
-		intent.trainingPhrases = intent.trainingPhrases.filter(a => a.trim())
+		intent.displayName = intent?.displayName?.trim() || '~.' + (++unnamedCount).toString().padStart(3, 0)
+		intent.displayName = `~${sheetID}.` + intent?.displayName
+		intent.trainingPhrases = intent?.trainingPhrases?.filter(a => a.trim())
 
 		// Agrupa respostas com suas variações
 		// Veja a função "groupSameTypeResponses" do arquivo "helpers.js"
-		intent.messages = groupSameTypeResponses(intent.messages)
+		intent.messages = groupSameTypeResponses(intent?.messages)
 
 		// Insere a intenção no array "intents"
 		intents.push(intent)
