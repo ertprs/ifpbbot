@@ -77,7 +77,7 @@ async function getDFResponse(text, from, platform = '') {
 	} catch (err) {
 		// Erro ao analisar respostas do Dialogflow
 		log('redBright', 'Dialogflow')('Erro ao analisar respostas:', err)
-		return [{ type: 'text', text: '🪳 _Desculpe! Ocorreu um erro ao analisar as respostas da intenção, por favor contate o administrador_' }]
+		return [{ type: 'text', text: '🐛 _Desculpe! Ocorreu um erro ao analisar as respostas da intenção, por favor contate o administrador_' }]
 	}
 }
 

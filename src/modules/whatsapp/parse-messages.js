@@ -1,6 +1,6 @@
 const { Buttons, List, MessageMedia } = require('whatsapp-web.js')
 const log = require('@helpers/logger')
-const optionsList = require('@helpers/options-list')
+const { optionsList } = require('@helpers/parse-messages-helpers')
 
 /**
  * Retorna as respostas formatadas para a biblioteca whatsapp-web.js
@@ -47,7 +47,7 @@ function parseMessages(responses, client) {
 	} catch (err) {
 		// Erro ao analisar mensagens
 		log('redBright', 'WhatsApp')('Erro ao analisar mensagens:', err, responses)
-		return [{ content: '🪳 _Desculpe! Ocorreu um erro ao analisar as mensagens_' }]
+		return [{ content: '🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_' }]
 	}
 }
 
@@ -108,7 +108,7 @@ function parseResponse(msg, client) {
 	} catch (err) {
 		// Erro ao enviar mensagem
 		log('redBright', 'WhatsApp')('Erro ao analisar mensagem:', err, msg)
-		return { content: '🪳 _Ocorreu um erro ao enviar esta mensagem_' }
+		return { content: '🐛 _Ocorreu um erro ao enviar esta mensagem_' }
 	}
 }
 

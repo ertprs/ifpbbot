@@ -7,17 +7,18 @@ const pino = require('pino')
 const getDFResponse = require('@dialogflow/get-df-response')
 const parseMessages = require('./parse-messages')
 
+// Desabilita os logs padrão
 const Logger = pino().child({})
 Logger.level = 'silent'
 
-const useStore = !process.argv.includes('--no-store')
-
-const store = useStore ? makeInMemoryStore({ logger: Logger }) : undefined
+// Carrega e salva o armazenamento do WhatsApp
+const store = makeInMemoryStore({ logger: Logger })
 store?.readFromFile('./whatsapp_store.json')
 setInterval(() => {
 	store?.writeToFile('./whatsapp_store.json')
 }, 10000)
 
+// Carrega e salva o estado do WhatsApp
 const { state, saveState } = useSingleFileAuthState('./whatsapp_auth.json')
 
 async function connectToWhatsApp() {
@@ -32,77 +33,75 @@ async function connectToWhatsApp() {
 	require('./test-messages')(client)
 	// }
 
-	// Conexão com o WhatsApp
+	// Observa mudanças na conexão com o WhatsApp
 	client.ev.on('connection.update', ({ connection, lastDisconnect }) => {
 		if (connection === 'close') {
 			if ((lastDisconnect.error)?.output?.statusCode !== DisconnectReason.loggedOut) {
 				connectToWhatsApp()
 			} else {
-				log('redBright', 'WhatsApp (2)')('Conexão fechada')
+				log('redBright', 'WhatsApp')('Conexão fechada')
 			}
 		} else if (connection === 'open') {
-			log('greenBright', 'WhatsApp (2)')('Conexão aberta')
+			log('greenBright', 'WhatsApp')('Conexão aberta')
 		}
 	})
 
 	// Mensagens recebidas
 	client.ev.on('messages.upsert', async ({ messages, type }) => {
-		console.log(messages)
+		// console.log(messages)
 		// console.log(type, messages)
+		// Responde apenas a novas mensagens
 		if (type !== 'notify') return
 
 		for (const msg of messages) {
-			// Impede de receber mensagens de outros remetentes
+			// Impede de receber mensagens de outros remetentes (temporário)
 			if (!(process.env.WHATSAPP2_ALLOW_CONTACTS || '').split(',').includes(msg.key.remoteJid)) continue
 
-			log('cyan', 'WhatsApp (2)')('Nova mensagem', `(${type})`, JSON.stringify(messages, null, 2))
+			log('cyan', 'WhatsApp')('Nova mensagem', `(${type})`, JSON.stringify(messages, null, 2))
 
 			// Impede de responder suas próprias mensagens (participant significa que foi de um grupo)
 			if (!msg.participant && msg.fromMe) continue
 
-			// Responde apenas mensagens
-			if (
-				!msg?.message ||
-				(
-					!msg?.message?.conversation &&
-					!msg?.message?.templateButtonReplyMessage?.selectedDisplayText &&
-					!msg?.message?.extendedTextMessage?.text &&
-					!msg?.message?.buttonsResponseMessage?.selectedDisplayText &&
-					!msg?.message?.listResponseMessage?.title
-				)
-			) continue
+			// Texto da mensagem
+			const msgText = msg?.message?.conversation || // Mensagem normal
+				msg?.message?.templateButtonReplyMessage?.selectedDisplayText || // Mensagem do botão de template
+				msg?.message?.extendedTextMessage?.text || // ???
+				msg?.message?.buttonsResponseMessage?.selectedDisplayText || // Mensagem do botão
+				msg?.message?.listResponseMessage?.title // Mensagem de uma lista de respostas
+
+			// Pula mensagens inválidas
+			if (!msg?.message || !msgText) continue
 
 			try {
+				// Marca a mensagem como lida
+				client.readMessages([msg?.key])
+				// Adiciona o status "Digitando..."
+				client.sendPresenceUpdate('composing', msg?.key?.remoteJid)
+
+				// Retorna as respostas do Dialogflow
 				const dialogFlowResponse = await getDFResponse(
-					msg?.message?.conversation ||
-					msg?.message?.templateButtonReplyMessage?.selectedDisplayText ||
-					msg?.message?.extendedTextMessage?.text ||
-					msg?.message?.buttonsResponseMessage?.selectedDisplayText ||
-					msg?.message?.listResponseMessage?.title,
-					msg.key.remoteJid,
+					msgText,
+					msg?.key?.remoteJid + (msg?.key?.participant || ''),
 					'whatsapp'
 				)
 
-				const parsedMessages = parseMessages(dialogFlowResponse)
+				// Transforma as mensagens do formato do Dialogflow em mensagens do WhatsApp
+				const parsedMessages = parseMessages(dialogFlowResponse, msg)
 
 				for (const parsedMessage of parsedMessages) {
-					await client.sendMessage(msg.key.remoteJid, parsedMessage).catch(console.error)
+					// Envia a resposta
+					await client.sendMessage(msg?.key?.remoteJid, parsedMessage).catch(console.error)
 				}
 
-				// msg.pushName // Nome
-				// msg.message.conversation // Texto
-				// msg.templateButtonReplyMessage.selectedDisplayText // Texto ao clicar em botão
-				// message.extendedTextMessage.text // Resposta
-				// msg.key.remoteJid // Número ou numero + id do grupo
-				// msg.key.participant // Número do remetente num grupo
+				// Remove o status "Digitando..."
+				client.sendPresenceUpdate('paused', msg?.key?.remoteJid)
+
 			} catch (err) {
+				// Ao ocorrer um erro
 				console.error(err)
-				await client.sendMessage(msg.key.remoteJid, { text: err.toString() })
+				await client.sendMessage(msg.key.remoteJid, { text: '🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_' })
 			}
 		}
-
-		// log('cyan', 'WhatsApp (2)')('Respondendo a', messages.messages[0].key.remoteJid)
-		// await client.sendMessage(messages.messages[0].key.remoteJid, { text: 'Hello there!' })
 	})
 
 	client.ev.on('creds.update', saveState)

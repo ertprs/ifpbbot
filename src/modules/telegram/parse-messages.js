@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 const { Context } = require('telegraf')
 const log = require('@helpers/logger')
-const optionsList = require('@helpers/options-list')
+const { optionsList } = require('@helpers/parse-messages-helpers')
 
 /**
  * Retorna as respostas formatadas para a biblioteca telegraf
@@ -44,13 +44,13 @@ async function parseMessages(responses, ctx) {
 			await parseResponse(response, ctx, i, responses).catch((err) => {
 				// Erro ao enviar mensagem
 				log('redBright', 'Telegram')('Erro ao analisar mensagem:', err, response)
-				ctx.replyWithMarkdown('🪳 _Ocorreu um erro ao enviar esta mensagem_')
+				ctx.replyWithMarkdown('🐛 _Ocorreu um erro ao enviar esta mensagem_')
 			})
 		}
 	} catch (err) {
 		// Erro ao analisar mensagens
 		log('redBright', 'Telegram')('Erro ao analisar mensagens:', err, responses)
-		ctx.replyWithMarkdown('🪳 _Desculpe! Ocorreu um erro ao analisar as mensagens_')
+		ctx.replyWithMarkdown('🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_')
 	}
 }
 
@@ -86,7 +86,7 @@ async function parseResponse(msg, ctx, i, responses) {
 			await ctx.replyWithDocument(msg.url, replyMarkup)
 			break
 		case 'contact':
-			await ctx.replyWithContact(msg.number, msg.name, replyMarkup)
+			await ctx.replyWithContact(msg.phone, msg.name, replyMarkup)
 			break
 		case 'accordion':
 			await ctx.replyWithMarkdown(`*${msg.title}*\n────────────────────\n${msg.text}`, replyMarkup)

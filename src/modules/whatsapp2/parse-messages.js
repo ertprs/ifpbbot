@@ -1,15 +1,14 @@
-const { Buttons, List, MessageMedia } = require('whatsapp-web.js')
 const log = require('@helpers/logger')
-const optionsList = require('@helpers/options-list')
+const { optionsList, generateVCard } = require('@helpers/parse-messages-helpers')
 
 /**
- * Retorna as respostas formatadas para a biblioteca whatsapp-web.js
+ * Retorna as respostas formatadas para a biblioteca Baileys
  * 
  * @param {object[]} responses - Respostas do Dialogflow
- * @param {Client} client - Cliente da biblioteca 
- * @returns {object[]} Array com objetos do whatsapp-web.js
+ * @param {object[]} originalMsg - Mensagem do Baileys
+ * @returns {object[]} Array com objetos do Baileys
  */
-function parseMessages(responses, client) {
+function parseMessages(responses, originalMsg) {
 	try {
 		for (const i in responses) {
 			const msg = responses[i]
@@ -42,35 +41,40 @@ function parseMessages(responses, client) {
 		return responses
 			.flat()
 			.filter(msg => msg)
-			.map(r => parseResponse(r, client))
+			.map(r => parseResponse(r, originalMsg))
 			.filter(msg => msg)
 	} catch (err) {
 		// Erro ao analisar mensagens
 		log('redBright', 'WhatsApp')('Erro ao analisar mensagens:', err, responses)
-		return [{ content: '🪳 _Desculpe! Ocorreu um erro ao analisar as mensagens_' }]
+		return [{ content: '🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_' }]
 	}
 }
 
 /**
- * Converte uma resposta para o formato da biblioteca whatsapp-web.js
+ * Converte uma resposta para o formato da biblioteca Baileys
  * 
  * @param {object} msg - Mensagem de resposta do Dialogflow
- * @param {Client} client - Cliente da biblioteca
+ * @param {object[]} originalMsg - Mensagem do Baileys
  * @returns {string|Buttons|MessageMedia} Respostas da biblioteca
  */
-function parseResponse(msg, client) {
+function parseResponse(msg, originalMsg) {
 	try {
 		switch (msg.type.toLowerCase().trim()) {
-			case 'text': return { text: msg.text }
+			case 'text':
+				return {
+					text: msg.text
+				}
 			case 'chips':
 				return {
 					text: msg.imageURL ? undefined : msg.prompt || '​',
 					caption: msg.imageURL ? msg.prompt || '​' : undefined,
 					footer: msg.footer,
 					image: msg.imageURL ? { url: msg.imageURL } : undefined,
-					buttons: msg.options.map((opt) => (
-						{ buttonId: Math.floor(Math.random() * 9999999).toString(), buttonText: { displayText: opt.text }, type: 1 }
-					)),
+					buttons: msg.options.map((opt) => ({
+						buttonId: Math.floor(Math.random() * 9999999).toString(),
+						buttonText: { displayText: opt.text },
+						type: 1
+					})),
 					headerType: 1
 				}
 			case 'image':
@@ -79,48 +83,62 @@ function parseResponse(msg, client) {
 					caption: msg.caption || msg.accessibilityText
 				}
 			case 'file':
-				return {text:'Em manutenção'}
-				// return {
-				// 	content: MessageMedia.fromUrl(msg.url, { unsafeMime: true }).then(file => {
-				// 		file.filename = msg.name || ('arquivo-' + new Date().toISOString())
-				// 		return file
-				// 	})
-				// }
-			case 'contact':
-				return {text:'Em manutenção'}
-				// return { content: client.getContactById(msg.number) }
-			case 'accordion':
-				return { text: `*${msg.title}*\n────────────────────\n${msg.text}` }
-			case 'option_list':
 				return {
+					document: { url: msg.url },
+					fileName: msg.name || ('arquivo-' + new Date().toISOString())
+				}
+			case 'contact':
+				return {
+					contacts: {
+						displayName: msg.name,
+						contacts: [{ vcard: generateVCard(msg) }]
+					}
+				}
+			case 'accordion':
+				return {
+					text: `*${msg.title}*\n────────────────────\n${msg.text}`
+				}
+			case 'option_list':
+				return !process.env.WHATSAPP_LISTS ? optionsList(msg) : {
 					title: msg.title,
 					text: msg.body || '​',
 					footer: msg.footer,
 					buttonText: msg.buttonText || 'Lista',
-					sections: msg.sections || [] // todo: verificar se é necessário rowId
+					sections: msg.sections || []
 				}
-				// return {
-				// 	content: !process.env.WHATSAPP_LISTS ? optionsList(msg) : new List(
-				// 		msg.body || '​',
-				// 		msg.buttonText || 'Lista',
-				// 		msg.sections || [],
-				// 		msg.title,
-				// 		msg.footer
-				// 	)
-				// }
+			case 'template_buttons': {
+				let i = 0
+				msg.templateButtons = msg.templateButtons.map((button) => {
+					button.index = ++i
+					if (button.quickReplyButton) {
+						button.quickReplyButton.id = Math.floor(Math.random() * 9999999).toString()
+					}
+					return button
+				})
+				return {
+					text: msg.text,
+					footer: msg.footer,
+					templateButtons: msg.templateButtons
+				}
+			}
 			case 'sticker':
-				return { sticker: { url: msg.url }}
-				// return {
-				// 	content: MessageMedia.fromUrl(msg.url, { unsafeMime: true }),
-				// 	options: { sendMediaAsSticker: true }
-				// }
+				return {
+					sticker: { url: msg.url }
+				}
+			case 'reaction':
+				return {
+					react: {
+						text: msg.emoji,
+						key: originalMsg.key
+					}
+				}
 			default:
 				return null
 		}
 	} catch (err) {
 		// Erro ao enviar mensagem
 		log('redBright', 'WhatsApp')('Erro ao analisar mensagem:', err, msg)
-		return { content: '🪳 _Ocorreu um erro ao enviar esta mensagem_' }
+		return { text: '🐛 _Ocorreu um erro ao enviar esta mensagem_' }
 	}
 }
 

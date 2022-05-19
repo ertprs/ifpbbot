@@ -27,4 +27,17 @@ function optionsList(msg) {
 	return text.trim()
 }
 
-module.exports = optionsList
+function generateVCard({ name, phone, email }) {
+	let vCard = 'BEGIN:VCARD\n'
+	vCard += 'VERSION:3.0\n'
+	if (name) vCard += `FN:${name}\n`
+	if (phone) vCard += `TEL;type=CELL;type=VOICE;waid=${phone}:+${phone}\n` // WhatsApp ID + phone number
+	if (email) vCard += `EMAIL;type=HOME,INTERNET:${email}\n`
+	vCard += 'END:VCARD'
+	return vCard
+}
+
+module.exports = {
+	optionsList,
+	generateVCard
+}

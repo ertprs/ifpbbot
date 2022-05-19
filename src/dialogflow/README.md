@@ -10,7 +10,7 @@ Esta função retorna uma *Promise* que resolvida retorna um *array* com as resp
 ```javascript
 [
   {
-    type: 'text|chips|option_list|image|file|sticker|contact|accordion|random'
+    type: 'text|chips|option_list|template_buttons|image|file|sticker|contact|accordion|reaction|random'
     // Outros parâmetros específicos de cada tipo
   },
   ...
@@ -89,6 +89,36 @@ Envia uma lista de opções<br>
 }
 ```
 
+### `template_buttons`
+Envia um cartão com botões<br>
+> Obs.: Somente suportado pelo WhatsApp
+
+```json
+{
+  "type": "template_buttons",
+  "text": "Texto",
+  "footer": "Rodapé", // Opcional
+  "templateButtons": [{
+      "urlButton": {
+        "displayText": "Texto do link",
+        "url": "https://github.com/josejefferson/ifpbbot"
+      }
+    },
+    {
+      "callButton": {
+        "displayText": "Texto do telefone",
+        "phoneNumber": "+55 (11) 98765-4321"
+      }
+    },
+    {
+      "quickReplyButton": {
+        "displayText": "Botão comum"
+      }
+    }
+  ]
+}
+```
+
 ### `image`
 Envia uma imagem<br>
 [Documentação do Dialogflow Messenger](https://cloud.google.com/dialogflow/es/docs/integrations/dialogflow-messenger#image_response_type)
@@ -137,8 +167,9 @@ Formato recomendado: "551187654321@c.us"
 ```json
 {
   "type": "contact",
-  "number": "Número de telefone",
-  "name": "Nome do contato"
+  "name": "Nome do contato",
+  "phone": "Número de telefone",
+  "email": "E-mail do contato"
 }
 ```
 
@@ -150,6 +181,17 @@ Envia um acordeão, que pode ser expandido ao clicar<br>
   "type": "accordion",
   "title": "Título do acordeão",
   "text": "Conteúdo"
+}
+```
+
+### `reaction`
+Reage à mensagem anterior<br>
+> Obs.: Somente suportado pelo WhatsApp
+
+```json
+{
+  "type": "reaction",
+	"emoji": "❤"
 }
 ```
 
