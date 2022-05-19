@@ -1,27 +1,25 @@
 require('dotenv/config')
 require('module-alias/register')
 const makeWASocket = require('@adiwajshing/baileys').default
-const { DisconnectReason, makeInMemoryStore, useSingleFileAuthState } = require('@adiwajshing/baileys')
+const { useSingleFileAuthState } = require('@adiwajshing/baileys')
 const log = require('@helpers/logger')
 const pino = require('pino')
 const getDFResponse = require('@dialogflow/get-df-response')
 const parseMessages = require('./parse-messages')
+const useRemoteAuthState = require('./remote-state')
 
 // Desabilita os logs padrão
 const Logger = pino().child({})
 Logger.level = 'silent'
 
-// Carrega e salva o armazenamento do WhatsApp
-const store = makeInMemoryStore({ logger: Logger })
-store?.readFromFile('./whatsapp_store.json')
-setInterval(() => {
-	store?.writeToFile('./whatsapp_store.json')
-}, 10000)
-
-// Carrega e salva o estado do WhatsApp
-const { state, saveState } = useSingleFileAuthState('./whatsapp_auth.json')
+// Armazenamento de estado do WhatsApp no banco de dados
+const remote = useRemoteAuthState('./whatsapp_auth.json')
 
 async function connectToWhatsApp() {
+	// Carrega o estado do WhatsApp no banco de dados
+	if (process.env.MONGO_DB) await remote.loadState()
+	const { state, saveState } = useSingleFileAuthState('./whatsapp_auth.json')
+
 	const client = makeWASocket({
 		printQRInTerminal: true,
 		logger: Logger,
@@ -36,11 +34,13 @@ async function connectToWhatsApp() {
 	// Observa mudanças na conexão com o WhatsApp
 	client.ev.on('connection.update', ({ connection, lastDisconnect }) => {
 		if (connection === 'close') {
-			if ((lastDisconnect.error)?.output?.statusCode !== DisconnectReason.loggedOut) {
-				connectToWhatsApp()
-			} else {
-				log('redBright', 'WhatsApp')('Conexão fechada')
-			}
+			log('redBright', 'WhatsApp')(
+				'Conexão fechada, motivo:',
+				lastDisconnect?.error?.output?.payload?.error, '-',
+				lastDisconnect?.error?.output?.payload?.message, '-',
+				lastDisconnect?.error?.output?.statusCode
+			)
+			setTimeout(connectToWhatsApp, 10000)
 		} else if (connection === 'open') {
 			log('greenBright', 'WhatsApp')('Conexão aberta')
 		}
@@ -104,7 +104,10 @@ async function connectToWhatsApp() {
 		}
 	})
 
-	client.ev.on('creds.update', saveState)
+	client.ev.on('creds.update', () => {
+		saveState()
+		remote.saveState()
+	})
 
 	return client
 }

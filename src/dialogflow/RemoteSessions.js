@@ -3,7 +3,7 @@ require('@helpers/database')
 
 class RemoteSessions {
 	constructor(saveTime = 30000) {
-		this.Sessions = require('@models/Sessions')
+		this.Data = require('@models/Data')
 		this.data = {}
 		this.saveInterval = saveTime
 		this.load()
@@ -11,7 +11,7 @@ class RemoteSessions {
 	}
 
 	load() {
-		this.Sessions.findOne().then((sessions) => {
+		this.Data.findOne({ type: 'sessions' }).then((sessions) => {
 			if (sessions) Object.assign(this.data, sessions.data)
 			log('greenBright', 'Sessões')('Sessões do banco de dados carregadas com sucesso')
 		}).catch((err) => {
@@ -20,12 +20,12 @@ class RemoteSessions {
 	}
 
 	save() {
-		this.Sessions.findOne().then((sessions) => {
+		this.Data.findOne({ type: 'sessions' }).then((sessions) => {
 			if (sessions) {
 				sessions.data = this.data
 				return sessions.save()
 			} else {
-				return this.Sessions.create({ data: this.data })
+				return this.Data.create({ type: 'sessions', data: this.data })
 			}
 		}).catch((err) => {
 			log('redBright', 'Sessões', true)('Não foi possível salvar as sessões no banco de dados', err)
