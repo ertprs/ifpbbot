@@ -61,47 +61,59 @@ function parseMessages(responses, client) {
 function parseResponse(msg, client) {
 	try {
 		switch (msg.type.toLowerCase().trim()) {
-			case 'text': return { content: msg.text }
+			case 'text': return { text: msg.text }
 			case 'chips':
 				return {
-					content: new Buttons(
-						msg.prompt || '​',
-						msg.options.map(opt => ({ body: opt.text }))
-					)
+					text: msg.imageURL ? undefined : msg.prompt || '​',
+					caption: msg.imageURL ? msg.prompt || '​' : undefined,
+					footer: msg.footer,
+					image: msg.imageURL ? { url: msg.imageURL } : undefined,
+					buttons: msg.options.map((opt) => (
+						{ buttonId: Math.floor(Math.random() * 9999999).toString(), buttonText: { displayText: opt.text }, type: 1 }
+					)),
+					headerType: 1
 				}
 			case 'image':
 				return {
-					content: MessageMedia.fromUrl(msg.rawUrl, { unsafeMime: true }).then(file => {
-						file.filename = msg.accessibilityText
-						return file
-					})
+					image: { url: msg.rawUrl },
+					caption: msg.caption || msg.accessibilityText
 				}
 			case 'file':
-				return {
-					content: MessageMedia.fromUrl(msg.url, { unsafeMime: true }).then(file => {
-						file.filename = msg.name || ('arquivo-' + new Date().toISOString())
-						return file
-					})
-				}
+				return {text:'Em manutenção'}
+				// return {
+				// 	content: MessageMedia.fromUrl(msg.url, { unsafeMime: true }).then(file => {
+				// 		file.filename = msg.name || ('arquivo-' + new Date().toISOString())
+				// 		return file
+				// 	})
+				// }
 			case 'contact':
-				return { content: client.getContactById(msg.number) }
+				return {text:'Em manutenção'}
+				// return { content: client.getContactById(msg.number) }
 			case 'accordion':
-				return { content: `*${msg.title}*\n────────────────────\n${msg.text}` }
+				return { text: `*${msg.title}*\n────────────────────\n${msg.text}` }
 			case 'option_list':
 				return {
-					content: !process.env.WHATSAPP_LISTS ? optionsList(msg) : new List(
-						msg.body || '​',
-						msg.buttonText || 'Lista',
-						msg.sections || [],
-						msg.title,
-						msg.footer
-					)
+					title: msg.title,
+					text: msg.body || '​',
+					footer: msg.footer,
+					buttonText: msg.buttonText || 'Lista',
+					sections: msg.sections || [] // todo: verificar se é necessário rowId
 				}
+				// return {
+				// 	content: !process.env.WHATSAPP_LISTS ? optionsList(msg) : new List(
+				// 		msg.body || '​',
+				// 		msg.buttonText || 'Lista',
+				// 		msg.sections || [],
+				// 		msg.title,
+				// 		msg.footer
+				// 	)
+				// }
 			case 'sticker':
-				return {
-					content: MessageMedia.fromUrl(msg.url, { unsafeMime: true }),
-					options: { sendMediaAsSticker: true }
-				}
+				return { sticker: { url: msg.url }}
+				// return {
+				// 	content: MessageMedia.fromUrl(msg.url, { unsafeMime: true }),
+				// 	options: { sendMediaAsSticker: true }
+				// }
 			default:
 				return null
 		}

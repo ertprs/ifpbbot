@@ -4,6 +4,8 @@ const makeWASocket = require('@adiwajshing/baileys').default
 const { DisconnectReason, makeInMemoryStore, useSingleFileAuthState } = require('@adiwajshing/baileys')
 const log = require('@helpers/logger')
 const pino = require('pino')
+const getDFResponse = require('@dialogflow/get-df-response')
+const parseMessages = require('./parse-messages')
 
 const Logger = pino().child({})
 Logger.level = 'silent'
@@ -44,11 +46,63 @@ async function connectToWhatsApp() {
 	})
 
 	// Mensagens recebidas
-	client.ev.on('messages.upsert', async (messages) => {
-		log('cyan', 'WhatsApp (2)')('Nova mensagem', JSON.stringify(messages, null, 2))
-		if (messages.messages[0].pushName !== process.env.WHATSAPP2_ALLOW_CONTACT) return
-		log('cyan', 'WhatsApp (2)')('Respondendo a', messages.messages[0].key.remoteJid)
-		await client.sendMessage(messages.messages[0].key.remoteJid, { text: 'Hello there!' })
+	client.ev.on('messages.upsert', async ({ messages, type }) => {
+		console.log(messages)
+		// console.log(type, messages)
+		if (type !== 'notify') return
+
+		for (const msg of messages) {
+			// Impede de receber mensagens de outros remetentes
+			if (!(process.env.WHATSAPP2_ALLOW_CONTACTS || '').split(',').includes(msg.key.remoteJid)) continue
+
+			log('cyan', 'WhatsApp (2)')('Nova mensagem', `(${type})`, JSON.stringify(messages, null, 2))
+
+			// Impede de responder suas próprias mensagens (participant significa que foi de um grupo)
+			if (!msg.participant && msg.fromMe) continue
+
+			// Responde apenas mensagens
+			if (
+				!msg?.message ||
+				(
+					!msg?.message?.conversation &&
+					!msg?.message?.templateButtonReplyMessage?.selectedDisplayText &&
+					!msg?.message?.extendedTextMessage?.text &&
+					!msg?.message?.buttonsResponseMessage?.selectedDisplayText &&
+					!msg?.message?.listResponseMessage?.title
+				)
+			) continue
+
+			try {
+				const dialogFlowResponse = await getDFResponse(
+					msg?.message?.conversation ||
+					msg?.message?.templateButtonReplyMessage?.selectedDisplayText ||
+					msg?.message?.extendedTextMessage?.text ||
+					msg?.message?.buttonsResponseMessage?.selectedDisplayText ||
+					msg?.message?.listResponseMessage?.title,
+					msg.key.remoteJid,
+					'whatsapp'
+				)
+
+				const parsedMessages = parseMessages(dialogFlowResponse)
+
+				for (const parsedMessage of parsedMessages) {
+					await client.sendMessage(msg.key.remoteJid, parsedMessage).catch(console.error)
+				}
+
+				// msg.pushName // Nome
+				// msg.message.conversation // Texto
+				// msg.templateButtonReplyMessage.selectedDisplayText // Texto ao clicar em botão
+				// message.extendedTextMessage.text // Resposta
+				// msg.key.remoteJid // Número ou numero + id do grupo
+				// msg.key.participant // Número do remetente num grupo
+			} catch (err) {
+				console.error(err)
+				await client.sendMessage(msg.key.remoteJid, { text: err.toString() })
+			}
+		}
+
+		// log('cyan', 'WhatsApp (2)')('Respondendo a', messages.messages[0].key.remoteJid)
+		// await client.sendMessage(messages.messages[0].key.remoteJid, { text: 'Hello there!' })
 	})
 
 	client.ev.on('creds.update', saveState)
