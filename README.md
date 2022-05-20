@@ -45,10 +45,10 @@ Caso você queira desativar alguma plataforma, como o WhatsApp ou Telegram, voc�
 <br>
 
 ## 2. Configuração do WhatsApp
-> Se você optou por utilizar apenas o Telegram, use a variável `DISABLE_WHATSAPP` e pule esta etapa
+* Execute o servidor e ao aparecer o QR Code escaneie utilizando a função **Aparelhos conectados** do seu app
+* Logo após, um arquivo `whatsapp_auth.json` será gerado na raiz.
 
-* Execute o servidor e ao aparecer o QR Code escaneie utilizando a função WhatsApp Web do seu app
-* Logo após, um arquivo `wa-session` será gerado na pasta `whatsapp/`. *Se necessário*, você pode incluir o conteúdo dele na variável de ambiente `WHATSAPP_TOKEN`
+> Se você NÃO estiver usando o WhatsApp **Business**, defina a variável de ambiente `WHATSAPP_LISTS=1` para ativar as listas do WhatsApp, pois o WhatsApp Business não suporta
 
 ### Configurar números permitidos (opcional)
 Caso você queira, você pode restringir o acesso do robô a determinados contatos. Para isso, coloque-os na variável de ambiente `WHATSAPP_ALLOWED_NUMBERS` os números separados por vírgula, exemplo: `55ddxxxxxxxx@c.us,55ddxxxxxxxx@c.us` (onde **d** é o DDD do número e o **x** são os dígitos do número sem o 9)
@@ -56,8 +56,6 @@ Caso você queira, você pode restringir o acesso do robô a determinados contat
 <br>
 
 ## 3. Configuração do Telegram
-> Se você optou por utilizar apenas o WhatsApp, use a variável `DISABLE_TELEGRAM` e pule esta etapa
-
 * Crie seu bot no @BotFather e coloque o token na variável de ambiente `TELEGRAM_BOT_TOKEN`
 
 ### Configurar Webhook
@@ -74,7 +72,7 @@ Caso você queira, você pode restringir o acesso do robô a determinados contat
 ## 5. Configuração do Webhook
 > Se você não quiser usar o webhook, use a variável `DISABLE_WEBHOOK` e pule esta etapa
 
-* Defina as variáveis `DB_HOST`, `DB_NAME`, `DB_USERNAME` e `DB_PASSWORD` com as credenciais do seu banco de dados MySQL
+* Defina a variável `MONGO_DB` com o link do seu banco de dados MongoDB
 
 <br>
 

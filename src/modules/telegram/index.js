@@ -13,7 +13,6 @@ if (!process.env.TELEGRAM_BOT_TOKEN) {
 }
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN)
-log('yellowBright', 'Telegram')('Conectando, aguarde...')
 
 // Mensagem /start
 bot.start((ctx) => {
