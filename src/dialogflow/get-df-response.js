@@ -1,6 +1,6 @@
 const path = require('path')
 const { jsonParse, randomItem } = require('@helpers/helpers')
-const log = require('@helpers/logger')
+const log = require('@logger')
 const dialogflow = require('@google-cloud/dialogflow')
 const { value } = require('pb-util')
 const setContexts = require('./set-df-contexts')

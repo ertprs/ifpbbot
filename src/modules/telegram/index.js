@@ -1,7 +1,7 @@
 require('dotenv/config')
 require('module-alias/register')
 const { Telegraf } = require('telegraf')
-const log = require('@helpers/logger')
+const log = require('@logger')
 const getDFResponse = require('@dialogflow/get-df-response')
 const parseMessages = require('./parse-messages')
 
@@ -22,6 +22,7 @@ bot.start((ctx) => {
 
 // Nova mensagem
 bot.on('text', async (ctx) => {
+	ctx.replyWithChatAction('typing')
 	getDFResponse(ctx.message.text, ctx.message.chat.id, 'telegram')
 		.then((r) => parseMessages(r, ctx))
 })

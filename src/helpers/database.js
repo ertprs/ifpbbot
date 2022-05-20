@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const log = require('@helpers/logger')
+const log = require('@logger')
 
 if (!process.env.MONGO_DB) {
 	log('redBright', 'Erro')('Credenciais do banco de dados MongoDB faltando')

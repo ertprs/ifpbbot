@@ -2,7 +2,7 @@ require('dotenv/config')
 require('module-alias/register')
 const makeWASocket = require('@adiwajshing/baileys').default
 const { useSingleFileAuthState } = require('@adiwajshing/baileys')
-const log = require('@helpers/logger')
+const log = require('@logger')
 const pino = require('pino')
 const getDFResponse = require('@dialogflow/get-df-response')
 const parseMessages = require('./parse-messages')
@@ -90,7 +90,8 @@ async function connectToWhatsApp() {
 
 				for (const parsedMessage of parsedMessages) {
 					// Envia a resposta
-					await client.sendMessage(msg?.key?.remoteJid, parsedMessage).catch(console.error)
+					await client.sendMessage(msg?.key?.remoteJid, parsedMessage)
+						.catch((err) => log('redBright', 'WhatsApp')('Erro ao enviar mensagem', err, parsedMessage))
 				}
 
 				// Remove o status "Digitando..."
@@ -98,7 +99,7 @@ async function connectToWhatsApp() {
 
 			} catch (err) {
 				// Ao ocorrer um erro
-				console.error(err)
+				log('redBright', 'WhatsApp')('Erro na análise de mensagens', err)
 				await client.sendMessage(msg.key.remoteJid, { text: '🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_' })
 			}
 		}

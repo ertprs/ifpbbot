@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 const { Context } = require('telegraf')
-const log = require('@helpers/logger')
+const log = require('@logger')
 const { optionsList } = require('@helpers/parse-messages-helpers')
 
 /**

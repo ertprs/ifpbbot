@@ -42,6 +42,7 @@
   },
   "_moduleAliases": {
     "@helpers": "src/helpers",
+    "@logger": "src/helpers/logger",
     "@models": "src/models",
     "@dialogflow": "src/dialogflow",
     "@modules": "src/modules"

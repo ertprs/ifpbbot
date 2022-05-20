@@ -1,11 +1,11 @@
-process.on('uncaughtException', console.error)
 require('dotenv/config')
 require('module-alias/register')
 const chalk = require('chalk')
-const log = require('@helpers/logger')
+const log = require('@logger')
 const makeBox = require('@helpers/makebox')
 const printLogo = require('@helpers/print-logo')
 const { isDisabled } = require('@helpers/helpers')
+process.on('uncaughtException', log('redBright', 'Erro não capturado'))
 let error = false
 
 // MÓDULOS
@@ -50,7 +50,6 @@ function start(moduleName, disabled = false, disabledMessage = '') {
 	try {
 		require(`./src/modules/${moduleName}`)
 	} catch (err) {
-		log('redBright', 'Erro')(`Erro ao executar o módulo ${moduleName}`)
-		console.error(err)
+		log('redBright', 'Erro')(`Erro ao executar o módulo ${moduleName}`, err)
 	}
 }

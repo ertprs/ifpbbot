@@ -1,4 +1,4 @@
-const log = require('@helpers/logger')
+const log = require('@logger')
 const dialogflow = require('@google-cloud/dialogflow')
 const { value } = require('pb-util')
 const projectId = process.env.PROJECT_ID

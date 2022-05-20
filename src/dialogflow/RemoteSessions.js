@@ -1,4 +1,4 @@
-const log = require('@helpers/logger')
+const log = require('@logger')
 require('@helpers/database')
 
 class RemoteSessions {

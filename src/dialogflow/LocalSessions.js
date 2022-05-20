@@ -1,4 +1,4 @@
-const log = require('@helpers/logger')
+const log = require('@logger')
 const fs = require('fs')
 
 class LocalSessions {
@@ -30,7 +30,7 @@ class LocalSessions {
 
 	save(fileName = this.fileName) {
 		fs.writeFile(fileName, JSON.stringify(this.data), (err) => {
-			if (err) console.error('Ocorreu um erro ao salvar sessão\n', err)
+			if (err) log('redBright', 'Sessões')('Ocorreu um erro ao salvar sessão', err)
 		})
 	}
 

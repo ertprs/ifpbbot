@@ -1,4 +1,4 @@
-const log = require('@helpers/logger')
+const log = require('@logger')
 const { optionsList, generateVCard } = require('@helpers/parse-messages-helpers')
 
 /**

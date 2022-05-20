@@ -7,7 +7,7 @@ module.exports = (client, chatID = '') => {
 	const express = require('express')
 	const router = express.Router()
 	const app = require('@helpers/http')
-	const log = require('@helpers/logger')
+	const log = require('@logger')
 	const getDFResponse = require('@dialogflow/get-df-response')
 	const parseMessages = require('./parse-messages')
 	const path = require('path')
@@ -20,7 +20,7 @@ module.exports = (client, chatID = '') => {
 		res.redirect('/whatsapp')
 
 		const messageText = req.body.message
-		const message = await client.sendMessage(chatID, { text: `*(VOCÊ)*\n${messageText}` }).catch(console.error)
+		const message = await client.sendMessage(chatID, { text: `*(VOCÊ)*\n${messageText}` }).catch(log('redBright', 'WhatsApp (teste)'))
 
 		// Retorna a resposta do DialogFlow
 		getDFResponse(messageText, chatID, 'whatsapp-test')
@@ -38,13 +38,13 @@ module.exports = (client, chatID = '') => {
 	async function sendMessages(parsedMessages, client, msg) {
 		for (const parsedMessage of parsedMessages) {
 			// Envia a resposta
-			await client.sendMessage(msg?.key?.remoteJid, parsedMessage).catch(console.error)
+			await client.sendMessage(msg?.key?.remoteJid, parsedMessage).catch(log('redBright', 'WhatsApp (teste)'))
 		}
 	}
 
 	// Executa caso ocorra algum erro
 	function error(err, id) {
-		console.error(err)
-		client.sendMessage(id, `*OCORREU UM ERRO*\n\n${err}`).catch(console.error)
+		log('redBright', 'WhatsApp (teste)')('Erro', err)
+		client.sendMessage(id, `*OCORREU UM ERRO*\n\n${err}`).catch(log('redBright', 'WhatsApp (teste)'))
 	}
 }

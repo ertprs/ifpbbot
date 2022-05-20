@@ -1,6 +1,6 @@
 const Teacher = require('@models/Teacher')
 const { randomItem: random } = require('@helpers/helpers')
-const log = require('@helpers/logger')
+const log = require('@logger')
 
 module.exports = (teacher) => {
 	log('cyan', 'Webhook', true)(`Consultando as disciplinas de ${teacher}...`)

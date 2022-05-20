@@ -1,5 +1,5 @@
 const fs = require('fs')
-const log = require('@helpers/logger')
+const log = require('@logger')
 require('@helpers/database')
 const Data = require('@models/Data')
 
