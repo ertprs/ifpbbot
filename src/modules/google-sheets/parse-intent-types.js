@@ -35,7 +35,7 @@ function parseIntentTypes(intent, columnName, cellValue) {
 
 	} else if (includes(columnName, ['imagem', 'image', 'foto', 'photo', 'picture'])) {
 		// Imagem
-		const [url, caption] = cellValue.split('|')
+		const [url, caption] = cellValue.split('\n')
 		intent.messages.push({
 			type: 'image',
 			rawUrl: url,
@@ -44,7 +44,7 @@ function parseIntentTypes(intent, columnName, cellValue) {
 
 	} else if (includes(columnName, ['arquivo', 'file', 'documento'])) {
 		// Arquivo
-		const [url, name] = cellValue.split('|')
+		const [url, name] = cellValue.split('\n')
 		intent.messages.push({
 			type: 'file',
 			url: url,
