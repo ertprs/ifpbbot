@@ -39,6 +39,28 @@ router.post('/dialogflow/syncIntents', async (req, res) => {
 	}
 })
 
+router.post('/dialogflow/syncParsedIntents', async (req, res) => {
+	try {
+		const startTime = Date.now()
+		let { intents, sheetID } = req.body
+		sheetID = sheetID || Math.floor(Math.random() * 9999).toString()
+
+		const currentIntents = await listIntents(sheetID)
+		await deleteIntents(currentIntents)
+		await createIntents(intents)
+
+		res.json({
+			success: true,
+			addedIntents: intents.length,
+			removedIntents: currentIntents.length,
+			time: Date.now() - startTime
+		})
+	} catch (err) {
+		res.json({ success: false })
+		log('redBright', 'Erro')('Erro ao inserir dados das Planilhas Google', err)
+	}
+})
+
 app.use('/googleSheets', router)
 
 const PORT = process.env.PORT || 443

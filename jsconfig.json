@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./src",
+		"paths": {
+			"@helpers/*": ["helpers/*"],
+			"@logger": ["helpers/logger"],
+			"@models/*": ["models/*"],
+			"@dialogflow/*": ["dialogflow/*"],
+			"@modules/*": ["modules/*"]
+		}
+	}
+}
