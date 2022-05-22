@@ -10,6 +10,8 @@ const intentsClient = new dialogflow.IntentsClient({
  * Adiciona as intents da planilha no Dialogflow
  */
 async function createIntents(intents) {
+	const operations = []
+
 	for (const i in intents) {
 		const intent = intents[i]
 		const parent = intentsClient.projectAgentPath(projectId)
@@ -31,10 +33,17 @@ async function createIntents(intents) {
 			}
 		})
 
-		const [response] = await intentsClient.createIntent({ parent, intent })
+		const operation = () => intentsClient.createIntent({ parent, intent }).then((response) => {
+			log('cyan', 'Planilhas Google', true)(`Intent criada (${+i + 1}/${intents.length}) ${response?.[0]?.displayName}`)
+		}).catch((err) => {
+			log('cyan', 'Planilhas Google')(`Erro ao criar intent (${+i + 1}/${intents.length})`, err.message)
+			throw err
+		})
 
-		log('cyan', 'Planilhas Google', true)(`Intent criada (${+i + 1}/${intents.length}) ${response.displayName}`)
+		operations.push(operation)
 	}
+
+	return operations
 }
 
 module.exports = createIntents

@@ -8,12 +8,21 @@ const intentsClient = new dialogflow.IntentsClient({
  * Exclui as intents de planilha do Dialogflow
  */
 async function deleteIntents(intents) {
+	const operations = []
+
 	for (const i in intents) {
 		const intent = intents[i]
-		await intentsClient.deleteIntent({ name: intent.name })
+		const operation = () => intentsClient.deleteIntent({ name: intent.name }).then(() => {
+			log('cyan', 'Planilhas Google', true)(`Intent excluída (${+i + 1}/${intents.length}) ${intent.displayName}`)
+		}).catch((err) => {
+			log('cyan', 'Planilhas Google')(`Erro ao excluir intent (${+i + 1}/${intents.length}) ${intent.displayName}`, err.message)
+			throw err
+		})
 
-		log('cyan', 'Planilhas Google', true)(`Intent excluída (${+i + 1}/${intents.length}) ${intent.displayName}`)
+		operations.push(operation)
 	}
+
+	return operations
 }
 
 module.exports = deleteIntents
