@@ -4,6 +4,63 @@ const log = require('@logger')
 const { optionsList } = require('@helpers/parse-messages-helpers')
 
 /**
+ * Converte uma resposta para o formato da biblioteca telegraf
+ * @param {object} msg - Mensagem de resposta do Dialogflow
+ * @param {Context} ctx - Contexto da biblioteca
+ */
+async function parseResponse(msg, ctx, i, responses) {
+	const isGroup = ctx.chat.type.includes('group')
+	const forceReply = isGroup ? { force_reply: true, input_field_placeholder: 'Responda ao ChatBot', selective: true } : {}
+	const inlineKeyboard = msg.buttons ? {
+		inline_keyboard: msg.buttons.map((opt) => [{
+			text: opt.text, callback_data: opt.text
+		}])
+	} : {}
+	const replyToMessageID = isGroup ? { reply_to_message_id: ctx.message?.message_id } : {}
+	const replyMarkup = { reply_markup: { ...forceReply, ...inlineKeyboard }, ...replyToMessageID }
+
+	// Coloque os tipos de mensagem abaixo
+	const MESSAGE_TYPES = {
+		/** Texto */
+		async text() {
+			if (msg.text) await ctx.replyWithMarkdown(msg.text, replyMarkup)
+		},
+
+		/** Imagem */
+		async image() {
+			await ctx.replyWithPhoto(msg.rawUrl, replyMarkup)
+		},
+
+		/** Arquivo */
+		async file() {
+			await ctx.replyWithDocument(msg.url, replyMarkup)
+		},
+
+		/** Contato */
+		async contact() {
+			await ctx.replyWithContact(msg.phone, msg.name, replyMarkup)
+		},
+
+		/** Acordeão */
+		async accordion() {
+			await ctx.replyWithMarkdown(`*${msg.title}*\n────────────────────\n${msg.text}`, replyMarkup)
+		},
+
+		/** Lista de opções */
+		async option_list() {
+			await ctx.replyWithMarkdown(optionsList(msg), replyMarkup)
+		},
+
+		/** Figurinha */
+		async sticker() {
+			await ctx.replyWithSticker(msg.url)
+		}
+	}
+
+	await MESSAGE_TYPES[msg.type.toLowerCase().trim()]?.()
+}
+
+/**
  * Retorna as respostas formatadas para a biblioteca telegraf
  * 
  * @param {object[]} responses - Respostas do Dialogflow
@@ -13,6 +70,7 @@ async function parseMessages(responses, ctx) {
 	try {
 		for (const i in responses) {
 			const msg = responses[i]
+			if (!msg) continue
 
 			// Remove as respostas com o parâmetro "ignoreWhatsApp"
 			if (msg.ignoreTelegram || msg.ignoretelegram) {
@@ -28,10 +86,17 @@ async function parseMessages(responses, ctx) {
 				}))
 			}
 
-			// Une respostas com Chips e com Texto
-			if (msg.type === 'chips' && i - 1 >= 0 && responses[i - 1].type === 'text') {
-				msg.prompt = responses[i - 1].text
-				responses[i - 1] = null
+			// Une respostas com Chips e a anterior
+			if (msg.type === 'chips' && i - 1 >= 0) {
+				let index = i
+				while (!responses[index - 1] && index >= 0) index--
+
+				if (!responses[index - 1]) continue
+
+				if (!responses[index - 1].buttons) responses[index - 1].buttons = msg.options
+				else responses[index - 1].buttons.push(...msg.options)
+
+				responses[i] = null
 			}
 		}
 
@@ -51,53 +116,6 @@ async function parseMessages(responses, ctx) {
 		// Erro ao analisar mensagens
 		log('redBright', 'Telegram')('Erro ao analisar mensagens:', err, responses)
 		ctx.replyWithMarkdown('🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_')
-	}
-}
-
-/**
- * Converte uma resposta para o formato da biblioteca telegraf
- * @param {object} msg - Mensagem de resposta do Dialogflow
- * @param {Context} ctx - Contexto da biblioteca
- */
-async function parseResponse(msg, ctx, i, responses) {
-	const isGroup = ctx.chat.type.includes('group')
-	const forceReply = isGroup ? { force_reply: true, input_field_placeholder: 'Responda ao ChatBot', selective: true } : {}
-	const replyMarkup = isGroup ? { reply_markup: { ...forceReply }, reply_to_message_id: ctx.message?.message_id } : undefined
-
-	switch (msg.type.toLowerCase().trim()) {
-		case 'text':
-			if (msg.text) await ctx.replyWithMarkdown(msg.text, replyMarkup)
-			break
-		case 'chips':
-			await ctx.replyWithMarkdown(msg.prompt || 'Selecione uma opção:', {
-				reply_markup: {
-					...forceReply,
-					inline_keyboard: msg.options.map((opt) => [{
-						text: opt.text, callback_data: opt.text
-					}])
-				}
-			})
-			break
-		case 'image':
-			await ctx.replyWithPhoto(msg.rawUrl, replyMarkup)
-			break
-		case 'file':
-			await ctx.replyWithDocument(msg.url, replyMarkup)
-			break
-		case 'contact':
-			await ctx.replyWithContact(msg.phone, msg.name, replyMarkup)
-			break
-		case 'accordion':
-			await ctx.replyWithMarkdown(`*${msg.title}*\n────────────────────\n${msg.text}`, replyMarkup)
-			break
-		case 'option_list':
-			await ctx.replyWithMarkdown(optionsList(msg), replyMarkup)
-			break
-		case 'sticker':
-			await ctx.replyWithSticker(msg.url)
-			break
-		default:
-			break
 	}
 }
 
