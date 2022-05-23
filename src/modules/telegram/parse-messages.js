@@ -28,7 +28,7 @@ async function parseResponse(msg, ctx, i, responses) {
 
 		/** Imagem */
 		async image() {
-			await ctx.replyWithPhoto(msg.rawUrl, replyMarkup)
+			await ctx.replyWithPhoto(msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
 		},
 
 		/** Arquivo */
