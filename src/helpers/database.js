@@ -25,4 +25,5 @@ function mongoConnect() {
 mongoConnect()
 
 require('@models/Data')
+require('@models/Schedule')
 require('@models/Teacher')

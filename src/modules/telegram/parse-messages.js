@@ -7,9 +7,12 @@ const { optionsList } = require('@helpers/parse-messages-helpers')
  * Converte uma resposta para o formato da biblioteca telegraf
  * @param {object} msg - Mensagem de resposta do Dialogflow
  * @param {Context} ctx - Contexto da biblioteca
+ * @param {number} index - Índice da resposta
+ * @param {object[]} responses - Respostas do Dialogflow
+ * @param {number} [chat] - ID do chat do Telegram (se não houver contexto)
  */
-async function parseResponse(msg, ctx, i, responses) {
-	const isGroup = ctx.chat.type.includes('group')
+async function parseResponse(msg, ctx, i, responses, chat = null) {
+	const isGroup = ctx?.chat?.type.includes('group')
 	const forceReply = isGroup ? { force_reply: true, input_field_placeholder: 'Responda ao ChatBot', selective: true } : {}
 	const inlineKeyboard = msg.buttons ? {
 		inline_keyboard: msg.buttons.map((opt) => [{
@@ -23,37 +26,44 @@ async function parseResponse(msg, ctx, i, responses) {
 	const MESSAGE_TYPES = {
 		/** Texto */
 		async text() {
-			if (msg.text) await ctx.replyWithMarkdown(msg.text, replyMarkup)
+			if (chat) return await ctx.sendMessage(chat, msg.text, { parse_mode: 'MarkdownV2', ...replyMarkup })
+			if (msg.text) return await ctx.replyWithMarkdown(msg.text, replyMarkup)
 		},
 
 		/** Imagem */
 		async image() {
-			await ctx.replyWithPhoto(msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
+			if (chat) return await ctx.sendPhoto(chat, msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
+			return await ctx.replyWithPhoto(msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
 		},
 
 		/** Arquivo */
 		async file() {
-			await ctx.replyWithDocument(msg.url, replyMarkup)
+			if (chat) return await ctx.sendDocument(chat, msg.url, replyMarkup)
+			return await ctx.replyWithDocument(msg.url, replyMarkup)
 		},
 
 		/** Contato */
 		async contact() {
-			await ctx.replyWithContact(msg.phone, msg.name, replyMarkup)
+			if (chat) return await ctx.sendContact(chat, msg.phone, msg.name, replyMarkup)
+			return await ctx.replyWithContact(msg.phone, msg.name, replyMarkup)
 		},
 
 		/** Acordeão */
 		async accordion() {
-			await ctx.replyWithMarkdown(`*${msg.title}*\n────────────────────\n${msg.text}`, replyMarkup)
+			if (chat) return await ctx.sendMessage(chat, `*${msg.title}*\n────────────────────\n${msg.text}`, { parse_mode: 'MarkdownV2', ...replyMarkup })
+			return await ctx.replyWithMarkdown(`*${msg.title}*\n────────────────────\n${msg.text}`, replyMarkup)
 		},
 
 		/** Lista de opções */
 		async option_list() {
-			await ctx.replyWithMarkdown(optionsList(msg), replyMarkup)
+			if (chat) return await ctx.sendMessage(chat, optionsList(msg), { parse_mode: 'MarkdownV2', ...replyMarkup })
+			return await ctx.replyWithMarkdown(optionsList(msg), replyMarkup)
 		},
 
 		/** Figurinha */
 		async sticker() {
-			await ctx.replyWithSticker(msg.url)
+			if (chat) return await ctx.sendSticker(chat, msg.url)
+			return await ctx.replyWithSticker(msg.url)
 		}
 	}
 
@@ -64,9 +74,10 @@ async function parseResponse(msg, ctx, i, responses) {
  * Retorna as respostas formatadas para a biblioteca telegraf
  * 
  * @param {object[]} responses - Respostas do Dialogflow
- * @param {Context} ctx - Contexto da biblioteca 
+ * @param {Context} ctx - Contexto da biblioteca
+ * @param {number} [chat] - ID do chat do Telegram
  */
-async function parseMessages(responses, ctx) {
+async function parseMessages(responses, ctx, chat = null) {
 	try {
 		for (const i in responses) {
 			const msg = responses[i]
@@ -106,16 +117,18 @@ async function parseMessages(responses, ctx) {
 		// Converte as respostas para o formato da biblioteca Telegraf
 		responses = responses.flat().filter(msg => msg)
 		for (const [i, response] of Object.entries(responses)) {
-			await parseResponse(response, ctx, i, responses).catch((err) => {
+			await parseResponse(response, ctx, i, responses, chat).catch((err) => {
 				// Erro ao enviar mensagem
 				log('redBright', 'Telegram')('Erro ao analisar mensagem:', err, response)
-				ctx.replyWithMarkdown('🐛 _Ocorreu um erro ao enviar esta mensagem_')
+				if (chat) ctx.sendMessage(chat, '🐛 _Ocorreu um erro ao enviar esta mensagem_', { parse_mode: 'MarkdownV2' })
+				else ctx.replyWithMarkdown('🐛 _Ocorreu um erro ao enviar esta mensagem_')
 			})
 		}
 	} catch (err) {
 		// Erro ao analisar mensagens
 		log('redBright', 'Telegram')('Erro ao analisar mensagens:', err, responses)
-		ctx.replyWithMarkdown('🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_')
+		if (chat) ctx.sendMessage(chat, '🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_', { parse_mode: 'MarkdownV2' })
+		else ctx.replyWithMarkdown('🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_')
 	}
 }
 

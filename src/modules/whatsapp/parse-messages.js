@@ -102,12 +102,12 @@ function parseResponse(msg, originalMsg) {
 
 		/** Reação */
 		reaction() {
-			return {
+			return originalMsg ? {
 				react: {
 					text: msg.emoji,
 					key: originalMsg?.key
 				}
-			}
+			} : null
 		}
 	}
 

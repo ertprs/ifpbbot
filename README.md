@@ -34,7 +34,7 @@ npm install
 # 🔧 Configuração
 
 ## ❌ Desabilitar uma plataforma
-Caso você queira desativar alguma plataforma, como o WhatsApp ou Telegram, você deve definir a variável de ambiente `DISABLE_WHATSAPP`, `DISABLE_TELEGRAM`, `DISABLE_GOOGLE_SHEETS`, `DISABLE_WEBHOOK` ou `DISABLE_SITE` como `1`
+Caso você queira desativar alguma plataforma, como o WhatsApp ou Telegram, você deve definir a variável de ambiente `DISABLE_WHATSAPP`, `DISABLE_TELEGRAM`, `DISABLE_GOOGLE_SHEETS`, `DISABLE_WEBHOOK`, `DISABLE_SCHEDULER` ou `DISABLE_SITE` como `1`
 
 <br>
 

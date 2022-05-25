@@ -16,6 +16,8 @@
     "googleSheets:dev": "cross-env NODE_ENV=development node src/modules/google-sheets",
     "webhook": "node src/modules/webhook",
     "webhook:dev": "cross-env NODE_ENV=development node src/modules/webhook",
+    "scheduler": "node src/modules/scheduler",
+    "scheduler:dev": "cross-env NODE_ENV=development node src/modules/scheduler",
     "site": "node src/modules/site",
     "site:dev": "cross-env NODE_ENV=development node src/modules/site"
   },

@@ -23,8 +23,11 @@ bot.start((ctx) => {
 // Nova mensagem
 bot.on('text', async (ctx) => {
 	ctx.replyWithChatAction('typing')
-	getDFResponse(ctx.message.text, ctx.message.chat.id, 'telegram', { chat: ctx.message.chat.id })
-		.then((r) => parseMessages(r, ctx))
+	getDFResponse(ctx.message.text, ctx.message.chat.id, 'telegram', {
+		chat: ctx.message.chat.id,
+		name: `${ctx.message.from.first_name} ${ctx.message.from.last_name}`,
+		username: ctx.message.from.username
+	}).then((r) => parseMessages(r, ctx))
 })
 
 // Mensagem de voz

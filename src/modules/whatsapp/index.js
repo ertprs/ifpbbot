@@ -7,7 +7,7 @@ const pino = require('pino')
 const getDFResponse = require('@dialogflow/get-df-response')
 const parseMessages = require('./parse-messages')
 const useRemoteAuthState = require('./remote-state')
-const exportObj = { client: null }
+const exportObj = { client: {} }
 module.exports = exportObj
 
 // Desabilita os logs padrão
@@ -76,6 +76,8 @@ async function connectToWhatsApp() {
 			// Pula mensagens inválidas
 			if (!msg?.message || !msgText) continue
 
+			console.log(msg)
+
 			try {
 				// Marca a mensagem como lida
 				client.readMessages([msg?.key])
@@ -87,7 +89,11 @@ async function connectToWhatsApp() {
 					msgText,
 					msg?.key?.remoteJid + (msg?.key?.participant || ''),
 					'whatsapp',
-					{ chat: msg?.key?.remoteJid, participant: msg?.key?.participant }
+					{
+						chat: msg?.key?.remoteJid,
+						name: msg?.pushName,
+						participant: msg?.key?.participant
+					}
 				)
 
 				// Transforma as mensagens do formato do Dialogflow em mensagens do WhatsApp
