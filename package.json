@@ -44,7 +44,7 @@
     "@helpers": "src/helpers",
     "@logger": "src/helpers/logger",
     "@models": "src/models",
-    "@dialogflow": "src/dialogflow",
+    "@dialogflow": "src/modules/dialogflow",
     "@modules": "src/modules"
   },
   "devDependencies": {

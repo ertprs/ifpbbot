@@ -7,6 +7,8 @@ const pino = require('pino')
 const getDFResponse = require('@dialogflow/get-df-response')
 const parseMessages = require('./parse-messages')
 const useRemoteAuthState = require('./remote-state')
+const exportObj = { client: null }
+module.exports = exportObj
 
 // Desabilita os logs padrão
 const Logger = pino().child({})
@@ -25,6 +27,8 @@ async function connectToWhatsApp() {
 		logger: Logger,
 		auth: local.state
 	})
+
+	exportObj.client = client
 
 	// Página de teste do WhatsApp
 	if (process.env.NODE_ENV === 'development') {
