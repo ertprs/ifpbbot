@@ -18,9 +18,10 @@ const CREDENTIALS = jsonParse(process.env.GCLOUD_CREDENTIALS)
  * @param {string} text - Texto da mensagem recebida
  * @param {string} from - ID único do chat ou contato da mensagem recebida
  * @param {string} [platform=''] - Prefixo para o ID de sessão usado para diferenciar plataformas (exemplo: 'whatsapp')
+ * @param {object} [info={}] - Mais informações para serem adicionadas na sessão
  * @returns {Promise<{ responses: object[] }>} Retorna as respostas do Dialogflow
  */
-async function getDFResponse(text, from, platform = '') {
+async function getDFResponse(text, from, platform = '', info = {}) {
 	try {
 		from = platform + from
 
@@ -36,6 +37,8 @@ async function getDFResponse(text, from, platform = '') {
 		// Cria uma nova sessão caso não exista
 		if (!sessions.data[from]) sessions.data[from] = {
 			lastMessageDate: Date.now(),
+			platform,
+			...info,
 			contexts: []
 		}
 

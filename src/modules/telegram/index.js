@@ -16,14 +16,14 @@ const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN)
 
 // Mensagem /start
 bot.start((ctx) => {
-	getDFResponse('Oi', ctx.message.chat.id, 'telegram')
+	getDFResponse('Oi', ctx.message.chat.id, 'telegram', { chat: ctx.message.chat.id })
 		.then((r) => parseMessages(r, ctx))
 })
 
 // Nova mensagem
 bot.on('text', async (ctx) => {
 	ctx.replyWithChatAction('typing')
-	getDFResponse(ctx.message.text, ctx.message.chat.id, 'telegram')
+	getDFResponse(ctx.message.text, ctx.message.chat.id, 'telegram', { chat: ctx.message.chat.id })
 		.then((r) => parseMessages(r, ctx))
 })
 
@@ -36,8 +36,12 @@ bot.on('voice', async (ctx) => {
 bot.on('callback_query', async (ctx) => {
 	ctx.answerCbQuery()
 	ctx.replyWithMarkdown(`💬 *${ctx.update.callback_query.data}*`)
-	getDFResponse(ctx.update.callback_query.data, ctx.update.callback_query.message.chat.id, 'telegram')
-		.then((r) => parseMessages(r, ctx))
+	getDFResponse(
+		ctx.update.callback_query.data,
+		ctx.update.callback_query.message.chat.id,
+		'telegram',
+		{ chat: ctx.update.callback_query.message.chat.id }
+	).then((r) => parseMessages(r, ctx))
 })
 
 // Inicia o servidor

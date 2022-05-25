@@ -82,7 +82,8 @@ async function connectToWhatsApp() {
 				const dialogflowResponse = await getDFResponse(
 					msgText,
 					msg?.key?.remoteJid + (msg?.key?.participant || ''),
-					'whatsapp'
+					'whatsapp',
+					{ chat: msg?.key?.remoteJid, participant: msg?.key?.participant }
 				)
 
 				// Transforma as mensagens do formato do Dialogflow em mensagens do WhatsApp

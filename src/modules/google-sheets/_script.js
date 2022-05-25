@@ -30,7 +30,8 @@ function updateDialogflow() {
 			method: 'post',
 			contentType: 'application/json',
 			headers: { Authorization: 'Basic ' + auth },
-			payload: JSON.stringify({ data, sheetID: SHEET_ID })
+			payload: JSON.stringify({ data, sheetID: SHEET_ID }),
+			muteHttpExceptions: true
 		})
 	} catch (err) {
 		// Erro
@@ -43,11 +44,17 @@ function updateDialogflow() {
 	const totalTime = Date.now() - startTime // Tempo da requisição
 	const responseJson = JSON.parse(responseText) // Resposta em JSON
 	const success = !!responseJson.success // Comando executado com êxito
+	const errors = responseJson.errors // Número de erros
+	const wait = responseJson.wait
 	const time = responseJson.time || '???' // Tempo de processamento do Dialogflow
 	console.log(responseJson)
 
-	if (success) {
+	if (success && !errors) {
 		active.toast(`As intenções foram adicionadas corretamente no Dialogflow (tempo: ${time}ms/${totalTime}ms)`, '✅ Sucesso', 5)
+	} else if (success) {
+		active.toast(`(${errors} erros) Algumas intenções foram adicionadas no Dialogflow (tempo: ${time}ms/${totalTime}ms)`, '⚠ Aviso', 5)
+	} else if (!success && wait) {
+		active.toast(`Aguarde ${Math.round(wait / 1000)} segundos para fazer outra requisição!`, '❌ Aguarde', 5)
 	} else {
 		active.toast('Ocorreu um erro ao adicionar as intenções no Dialogflow', '❌ Falha', 5)
 	}
