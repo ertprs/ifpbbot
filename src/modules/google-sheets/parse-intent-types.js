@@ -51,8 +51,15 @@ function parseIntentTypes(intent, columnName, cellValue) {
 			name: name
 		})
 		if (url) intent.messages.push({
-			type: 'text',
-			text: ['​' + (name ? (name + '\n') : '') + url]
+			type: 'button',
+			icon: {
+				type: 'insert_drive_file',
+				color: '#309e42'
+			},
+			text: name || 'Arquivo',
+			link: url,
+			ignoreWhatsApp: true,
+			ignoreTelegram: true
 		})
 	} else if (includes(columnName, ['botao', 'button', 'chips'])) {
 		// Chips

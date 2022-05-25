@@ -73,7 +73,7 @@ async function parseMessages(responses, ctx) {
 			if (!msg) continue
 
 			// Remove as respostas com o parâmetro "ignoreTelegram"
-			if (msg.ignoreTelegram || msg.ignoretelegram || (msg.type === 'text' && msg.text?.startsWith('​'))) {
+			if (msg.ignoreTelegram || msg.ignoretelegram) {
 				responses[i] = null
 				continue
 			}

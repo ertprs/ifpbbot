@@ -127,7 +127,7 @@ function parseMessages(responses, originalMsg) {
 			if (!msg) continue
 
 			// Remove as respostas com o parâmetro "ignoreWhatsApp"
-			if (msg.ignoreWhatsApp || msg.ignoreWhatsapp || msg.ignorewhatsapp || msg.ignorewhatsApp || (msg.type === 'text' && msg.text?.startsWith('​'))) {
+			if (msg.ignoreWhatsApp || msg.ignoreWhatsapp || msg.ignorewhatsapp || msg.ignorewhatsApp) {
 				responses[i] = null
 				continue
 			}
