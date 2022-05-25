@@ -50,6 +50,10 @@ function parseIntentTypes(intent, columnName, cellValue) {
 			url: url,
 			name: name
 		})
+		if (url) intent.messages.push({
+			type: 'text',
+			text: ['​' + (name ? (name + '\n') : '') + url]
+		})
 	} else if (includes(columnName, ['botao', 'button', 'chips'])) {
 		// Chips
 		intent.messages.push({

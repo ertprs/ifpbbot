@@ -72,8 +72,8 @@ async function parseMessages(responses, ctx) {
 			const msg = responses[i]
 			if (!msg) continue
 
-			// Remove as respostas com o parâmetro "ignoreWhatsApp"
-			if (msg.ignoreTelegram || msg.ignoretelegram) {
+			// Remove as respostas com o parâmetro "ignoreTelegram"
+			if (msg.ignoreTelegram || msg.ignoretelegram || (msg.type === 'text' && msg.text?.startsWith('​'))) {
 				responses[i] = null
 				continue
 			}
