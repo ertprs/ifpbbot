@@ -16,7 +16,17 @@ if (process.env.GOOGLE_SHEETS_USERS) router.use(basicAuth({
 	unauthorizedResponse: () => 'Você não tem autorização para utilizar este servidor'
 }))
 
+let operationsCooldown = -Infinity
+
 router.post('/dialogflow/syncIntents', async (req, res) => {
+	// Se estiver em cooldown retorna um erro
+	if (Date.now() < operationsCooldown) return res.status(503).json({
+		success: false,
+		wait: operationsCooldown - Date.now()
+	})
+
+	operationsCooldown = Date.now() + 60000
+
 	try {
 		const startTime = Date.now()
 		let { data, sheetID } = req.body
@@ -24,17 +34,20 @@ router.post('/dialogflow/syncIntents', async (req, res) => {
 
 		const intents = parseIntents(data, sheetID)
 		const currentIntents = await listIntents(sheetID)
-		await deleteIntents(currentIntents)
-		await createIntents(intents)
+		const deleteErrors = await deleteIntents(currentIntents)
+		const createErrors = await createIntents(intents)
+
+		log('greenBright', 'Planilhas Google')(`Requisição finalizada (${deleteErrors + createErrors} erro(s) - ${Date.now() - startTime}ms)`)
 
 		res.json({
 			success: true,
 			addedIntents: intents.length,
 			removedIntents: currentIntents.length,
+			errors: deleteErrors + createErrors,
 			time: Date.now() - startTime
 		})
 	} catch (err) {
-		res.json({ success: false })
+		res.json({ success: false, error: err })
 		log('redBright', 'Erro')('Erro ao inserir dados das Planilhas Google', err)
 	}
 })
