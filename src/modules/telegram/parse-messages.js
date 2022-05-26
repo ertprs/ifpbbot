@@ -26,7 +26,7 @@ async function parseResponse(msg, ctx, i, responses, chat = null) {
 	const MESSAGE_TYPES = {
 		/** Texto */
 		async text() {
-			if (chat) return await ctx.sendMessage(chat, msg.text, { parse_mode: 'MarkdownV2', ...replyMarkup })
+			if (chat && msg.text) return await ctx.sendMessage(chat, msg.text, { parse_mode: 'Markdown', ...replyMarkup })
 			if (msg.text) return await ctx.replyWithMarkdown(msg.text, replyMarkup)
 		},
 
@@ -50,13 +50,13 @@ async function parseResponse(msg, ctx, i, responses, chat = null) {
 
 		/** Acordeão */
 		async accordion() {
-			if (chat) return await ctx.sendMessage(chat, `*${msg.title}*\n────────────────────\n${msg.text}`, { parse_mode: 'MarkdownV2', ...replyMarkup })
+			if (chat) return await ctx.sendMessage(chat, `*${msg.title}*\n────────────────────\n${msg.text}`, { parse_mode: 'Markdown', ...replyMarkup })
 			return await ctx.replyWithMarkdown(`*${msg.title}*\n────────────────────\n${msg.text}`, replyMarkup)
 		},
 
 		/** Lista de opções */
 		async option_list() {
-			if (chat) return await ctx.sendMessage(chat, optionsList(msg), { parse_mode: 'MarkdownV2', ...replyMarkup })
+			if (chat) return await ctx.sendMessage(chat, optionsList(msg), { parse_mode: 'Markdown', ...replyMarkup })
 			return await ctx.replyWithMarkdown(optionsList(msg), replyMarkup)
 		},
 
@@ -120,14 +120,14 @@ async function parseMessages(responses, ctx, chat = null) {
 			await parseResponse(response, ctx, i, responses, chat).catch((err) => {
 				// Erro ao enviar mensagem
 				log('redBright', 'Telegram')('Erro ao analisar mensagem:', err, response)
-				if (chat) ctx.sendMessage(chat, '🐛 _Ocorreu um erro ao enviar esta mensagem_', { parse_mode: 'MarkdownV2' })
+				if (chat) ctx.sendMessage(chat, '🐛 _Ocorreu um erro ao enviar esta mensagem_', { parse_mode: 'Markdown' })
 				else ctx.replyWithMarkdown('🐛 _Ocorreu um erro ao enviar esta mensagem_')
 			})
 		}
 	} catch (err) {
 		// Erro ao analisar mensagens
 		log('redBright', 'Telegram')('Erro ao analisar mensagens:', err, responses)
-		if (chat) ctx.sendMessage(chat, '🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_', { parse_mode: 'MarkdownV2' })
+		if (chat) ctx.sendMessage(chat, '🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_', { parse_mode: 'Markdown' })
 		else ctx.replyWithMarkdown('🐛 _Desculpe! Ocorreu um erro ao analisar as mensagens_')
 	}
 }
