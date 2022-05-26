@@ -1,7 +1,7 @@
 require('dotenv/config')
 require('module-alias/register')
 const log = require('@logger')
-const app = require('@helpers/http')
+const app = require('@config/http')
 const express = require('express')
 const router = express.Router()
 router.use(express.static(__dirname + '/public'))

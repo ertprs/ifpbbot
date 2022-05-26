@@ -56,7 +56,7 @@ function start() {
 
 // Servidor Webhook
 if (process.env.TELEGRAM_WEBHOOK_URL) {
-	const app = require('@helpers/http')
+	const app = require('@config/http')
 	const webhookURL = process.env.TELEGRAM_WEBHOOK_URL
 	const webhookPath = new URL(process.env.TELEGRAM_WEBHOOK_URL).pathname
 	bot.telegram.setWebhook(webhookURL).then((s) => !s && start())

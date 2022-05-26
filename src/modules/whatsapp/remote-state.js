@@ -1,6 +1,6 @@
 const fs = require('fs')
 const log = require('@logger')
-require('@helpers/database')
+require('@config/database')
 const Data = require('@models/Data')
 
 function useRemoteAuthState(filePath = './whatsapp_auth.json') {

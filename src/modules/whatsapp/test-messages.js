@@ -6,7 +6,7 @@
 module.exports = (client, chatID = '') => {
 	const express = require('express')
 	const router = express.Router()
-	const app = require('@helpers/http')
+	const app = require('@config/http')
 	const log = require('@logger')
 	const getDFResponse = require('@dialogflow/get-df-response')
 	const parseMessages = require('./parse-messages')

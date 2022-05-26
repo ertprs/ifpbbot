@@ -1,7 +1,7 @@
 require('dotenv/config')
 require('module-alias/register')
 const log = require('@logger')
-const app = require('@helpers/http')
+const app = require('@config/http')
 const express = require('express')
 const basicAuth = require('express-basic-auth')
 const router = express.Router()

@@ -60,7 +60,6 @@ function startScheduler() {
 	// Busca os agendamentos
 	return Schedule.find({ status: 'waiting' }).then((schedules) => {
 		if (schedules.length) log('greenBright', 'Agendamento')(`Agendando ${schedules.length} mensagens`)
-		console.log(scheduleTimers)
 
 		for (const scd of schedules) {
 			/** Função que será executada ao terminar o timer */

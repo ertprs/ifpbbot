@@ -3,11 +3,11 @@ require('module-alias/register')
 const getSubjects = require('./intents/getSubjects')
 const getTeachers = require('./intents/getTeachers')
 const log = require('@logger')
-const app = require('@helpers/http')
+const app = require('@config/http')
 const express = require('express')
 const basicAuth = require('express-basic-auth')
 const router = express.Router()
-require('@helpers/database')
+require('@config/database')
 
 if (process.env.WEBHOOK_USERS) router.use(basicAuth({
 	users: JSON.parse(process.env.WEBHOOK_USERS || '{}'),
