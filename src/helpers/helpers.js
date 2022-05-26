@@ -29,13 +29,10 @@ function jsonParse(text, reviver, defaultValue = {}, noDefaultValue = false) {
  * @param {Function} fn - Função que será executada
  */
 function schedule(date, fn = () => { }) {
-	return new Promise((resolve, reject) => {
-		let timeLeft = date - new Date()
-		console.log(timeLeft)
-		// if (timeLeft < 0) return reject(false)
-		if (timeLeft < 0) timeLeft = 0
-		setTimeout(() => resolve(fn()), timeLeft)
-	})
+	let timeLeft = date - new Date()
+	// if (timeLeft < 0) return false
+	if (timeLeft < 0) timeLeft = 0
+	return setTimeout(fn, timeLeft)
 }
 
 module.exports = {
