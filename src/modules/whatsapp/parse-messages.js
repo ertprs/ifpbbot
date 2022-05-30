@@ -35,15 +35,40 @@ function parseResponse(msg, originalMsg) {
 		/** Imagem */
 		image() {
 			return {
-				image: { url: msg.rawUrl },
+				image: { url: msg.url || msg.rawUrl },
 				caption: msg.caption || msg.accessibilityText
+			}
+		},
+
+		/** Vídeo */
+		video() {
+			return {
+				video: { url: msg.url || msg.rawUrl },
+				caption: msg.caption || msg.accessibilityText
+			}
+		},
+
+		/** Áudio */
+		audio() {
+			return {
+				audio: { url: msg.url || msg.rawUrl },
+				ptt: false
+			}
+		},
+
+		/** GIF */
+		gif() {
+			return {
+				video: { url: msg.url || msg.rawUrl },
+				caption: msg.caption || msg.accessibilityText,
+				gifPlayback: true
 			}
 		},
 
 		/** Arquivo */
 		file() {
 			return {
-				document: { url: msg.url },
+				document: { url: msg.url || msg.rawUrl },
 				fileName: msg.name || ('arquivo-' + new Date().toISOString())
 			}
 		},
@@ -96,7 +121,7 @@ function parseResponse(msg, originalMsg) {
 		/** Figurinha */
 		sticker() {
 			return {
-				sticker: { url: msg.url }
+				sticker: { url: msg.url || msg.rawUrl }
 			}
 		},
 

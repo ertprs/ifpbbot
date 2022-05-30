@@ -2,10 +2,10 @@
   "name": "ifpbbot",
   "version": "1.0.0",
   "description": "Servidor para chatbot com Dialogflow integrado ao WhatsApp e Telegram",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "cross-env NODE_ENV=development node index.js",
+    "start": "node src/index.js",
+    "dev": "cross-env NODE_ENV=development node src/index.js",
     "lint": "eslint src/**/*.js",
     "lint:fix": "eslint src/**/*.js --fix",
     "whatsapp": "node src/modules/whatsapp",

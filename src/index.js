@@ -49,7 +49,7 @@ MODULES.forEach((module) => start(...module))
 function start(moduleName, disabled = false, disabledMessage = '') {
 	if (isDisabled(disabled)) return log('cyan', 'Aviso')(disabledMessage)
 	try {
-		require(`./src/modules/${moduleName}`)
+		require(`./modules/${moduleName}`)
 	} catch (err) {
 		log('redBright', 'Erro')(`Erro ao executar o módulo ${moduleName}`, err)
 	}

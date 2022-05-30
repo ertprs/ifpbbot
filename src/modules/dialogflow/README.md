@@ -10,7 +10,7 @@ Esta função retorna uma *Promise* que resolvida retorna um *array* com as resp
 ```javascript
 [
   {
-    type: 'text|chips|option_list|template_buttons|image|file|sticker|contact|accordion|reaction|random'
+    type: 'text|chips|option_list|template_buttons|image|video|audio|gif|file|sticker|contact|accordion|reaction|random'
     // Outros parâmetros específicos de cada tipo
   },
   ...
@@ -127,6 +127,43 @@ Envia uma imagem<br>
   "type": "image",
   "rawUrl": "URL da imagem",
   "accessibilityText": "Legenda da imagem" // Opcional
+}
+```
+
+### `video`
+Envia um vídeo
+> Não suportado pelo Dialogflow Messenger
+```json
+{
+  "type": "video",
+  "url": "URL do vídeo",
+  "caption": "Legenda do vídeo" // Opcional
+}
+```
+
+### `audio`
+Envia um áudio
+> Não suportado pelo Dialogflow Messenger
+
+> No WhatsApp, envie em formato .opus
+```json
+{
+  "type": "audio",
+  "url": "URL do áudio",
+  "caption": "Legenda do áudio" // Opcional
+}
+```
+
+### `gif`
+Envia um GIF
+> Não suportado pelo Dialogflow Messenger
+
+> No WhatsApp, envie em formato de vídeo (.mp4), não em formato .gif
+```json
+{
+  "type": "gif",
+  "url": "URL do GIF",
+  "caption": "Legenda do GIF" // Opcional
 }
 ```
 

@@ -2,7 +2,8 @@
 
 const chalk = require('chalk')
 
-module.exports = function () {
+module.exports = () => {
+	if (process.env.HIDE_LOGO) return
 	const text = '' +
 		chalk.redBright('    ______') + chalk.greenBright('      _________     _________') + '\n' +
 		chalk.redBright('   /\\\\\\\\\\\\\\_') + chalk.greenBright('   /\\\\\\\\\\\\\\\\\\\\\   /\\\\\\\\\\\\\\\\\\\\') + '\n' +

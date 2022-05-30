@@ -18,11 +18,6 @@ function optionsList(msg) {
 		}
 	}
 
-	if (msg.footer) {
-		text += '\n───────────────\n'
-		text += `\n_${msg.footer}_`
-	}
-
 	return text.trim()
 }
 

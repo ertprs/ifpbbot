@@ -45,8 +45,6 @@ function useRemoteAuthState(filePath = './whatsapp_auth.json') {
 					// Se não houver um estado no banco de dados, cria
 					return Data.create({ type: 'whatsapp-state', data })
 				}
-			}).then(() => {
-				log('greenBright', 'WhatsApp', true)('Estado salvo com sucesso')
 			}).catch((err) => {
 				log('redBright', 'Whatsapp', true)('Falha ao salvar estado do WhatsApp no banco de dados', err)
 			})

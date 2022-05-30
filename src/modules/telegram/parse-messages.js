@@ -32,14 +32,32 @@ async function parseResponse(msg, ctx, i, responses, chat = null) {
 
 		/** Imagem */
 		async image() {
-			if (chat) return await ctx.sendPhoto(chat, msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
-			return await ctx.replyWithPhoto(msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
+			if (chat) return await ctx.sendPhoto(chat, msg.url || msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
+			return await ctx.replyWithPhoto(msg.url || msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
+		},
+
+		/** Vídeo */
+		async video() {
+			if (chat) return await ctx.sendVideo(chat, msg.url || msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
+			return await ctx.replyWithVideo(msg.url || msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
+		},
+
+		/** Áudio */
+		async audio() {
+			if (chat) return await ctx.sendAudio(chat, msg.url || msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
+			return await ctx.replyWithAudio(msg.url || msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
+		},
+
+		/** GIF */
+		async gif() {
+			if (chat) return await ctx.sendAnimation(chat, msg.url || msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
+			return await ctx.replyWithAnimation(msg.url || msg.rawUrl, { caption: msg.caption || msg.accessibilityText, ...replyMarkup })
 		},
 
 		/** Arquivo */
 		async file() {
-			if (chat) return await ctx.sendDocument(chat, msg.url, replyMarkup)
-			return await ctx.replyWithDocument(msg.url, replyMarkup)
+			if (chat) return await ctx.sendDocument(chat, msg.url || msg.rawUrl, replyMarkup)
+			return await ctx.replyWithDocument(msg.url || msg.rawUrl, replyMarkup)
 		},
 
 		/** Contato */
@@ -62,8 +80,8 @@ async function parseResponse(msg, ctx, i, responses, chat = null) {
 
 		/** Figurinha */
 		async sticker() {
-			if (chat) return await ctx.sendSticker(chat, msg.url)
-			return await ctx.replyWithSticker(msg.url)
+			if (chat) return await ctx.sendSticker(chat, msg.url || msg.rawUrl)
+			return await ctx.replyWithSticker(msg.url || msg.rawUrl)
 		}
 	}
 
