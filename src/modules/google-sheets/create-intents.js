@@ -24,7 +24,7 @@ async function createIntents(intents) {
 			})
 
 			intent.messages = intent.messages.map((message) => {
-				if (message.type === 'text') {
+				if (message.type === 'text' && !message.ignoreDialogflow) {
 					return { text: { text: message.text } }
 				} else {
 					return {

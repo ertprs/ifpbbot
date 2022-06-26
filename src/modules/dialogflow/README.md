@@ -34,7 +34,7 @@ Envia uma mensagem simples de texto
 ```json
 {
   "type": "text",
-  "text": "Texto da mensagem"
+  "text": ["Texto da mensagem"]
 }
 ```
 
