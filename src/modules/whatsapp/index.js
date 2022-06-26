@@ -76,8 +76,6 @@ async function connectToWhatsApp() {
 			// Pula mensagens inválidas
 			if (!msg?.message || !msgText) continue
 
-			console.log(msg)
-
 			try {
 				// Marca a mensagem como lida
 				client.readMessages([msg?.key])

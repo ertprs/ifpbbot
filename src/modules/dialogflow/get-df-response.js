@@ -6,6 +6,7 @@ const { value } = require('pb-util')
 const setContexts = require('./set-df-contexts')
 const LocalSessions = require('./LocalSessions')
 const RemoteSessions = require('./RemoteSessions')
+const runAction = require('./actions')
 const sessions = process.env.MONGO_DB
 	? new RemoteSessions()
 	: new LocalSessions(path.resolve(__dirname, './df-sessions.json'))
@@ -36,14 +37,16 @@ async function getDFResponse(text, from, platform = '', info = {}) {
 
 		// Cria uma nova sessão caso não exista
 		if (!sessions.data[from]) sessions.data[from] = {
-			lastMessageDate: Date.now(),
+			firstInteraction: new Date(),
+			lastInteraction: new Date(),
+			messageCount: 0,
 			platform,
 			...info,
 			contexts: []
 		}
 
 		// Se a última mensagem da pessoa foi há mais de 5 minutos, define os contextos no Dialogflow
-		if (Date.now() - sessions.data[from].lastMessageDate > 300000) {
+		if (new Date() - sessions.data[from].lastInteraction > 300000) {
 			await setContexts(sessions.data[from].contexts, sessionPath)
 		}
 
@@ -59,11 +62,13 @@ async function getDFResponse(text, from, platform = '', info = {}) {
 		}
 
 		const [response] = await sessionClient.detectIntent(request)
+		await runAction(response, { from, platform, text })
 		const contexts = response.queryResult.outputContexts
 
 		// Atualiza as sessões
 		sessions.data[from].contexts = contexts
-		sessions.data[from].lastMessageDate = Date.now()
+		sessions.data[from].lastInteraction = new Date()
+		sessions.data[from].messageCount++
 
 		// Converte as respostas em formato de String e Payload em Objeto
 		const responses = response.queryResult.fulfillmentMessages
