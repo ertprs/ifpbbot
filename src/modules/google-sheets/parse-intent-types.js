@@ -27,10 +27,11 @@ function parseIntentTypes(intent, columnName, cellValue) {
 		})
 
 	} else if (includes(columnName, ['texto', 'text', 'resposta', 'response'])) {
+		if () 
 		// Texto
 		intent.messages.push({
 			type: 'text',
-			text: [cellValue]
+			text: [cellValue.startsWith('!\n') ? ...cellValue.substring(2).trim().split('\n') : cellValue]
 		})
 
 	} else if (includes(columnName, ['imagem', 'image', 'foto', 'photo', 'picture'])) {
