@@ -4,7 +4,7 @@ const chalk = require('chalk')
 const log = require('@logger')
 const makeBox = require('@helpers/makebox')
 const printLogo = require('@helpers/print-logo')
-const { isDisabled } = require('@helpers/helpers')
+const { isDisabled } = require('@helpers')
 process.on('uncaughtException', log('redBright', 'Erro não capturado'))
 let error = false
 
@@ -16,7 +16,8 @@ const MODULES = ([
 	['google-sheets', process.env.DISABLE_GOOGLE_SHEETS, 'Integração com Planilhas Google desativado por variável de ambiente'],
 	['webhook', process.env.DISABLE_WEBHOOK, 'Servidor webhook desativado por variável de ambiente'],
 	['scheduler', process.env.DISABLE_SCHEDULER, 'Agendador desativado por variável de ambiente'],
-	['site', process.env.DISABLE_SITE, 'Site desativado por variável de ambiente']
+	['site', process.env.DISABLE_SITE, 'Site desativado por variável de ambiente'],
+	['backup', process.env.DISABLE_BACKUP, 'Backup desativado por variável de ambiente']
 ])
 
 // Limpa a tela e imprime o logo

@@ -38,7 +38,13 @@ async function createTransporter() {
 const transporter = createTransporter()
 async function send(options) {
 	const emailTransporter = await transporter
-	options = Object.assign(options, { from: process.env.GMAIL_EMAIL })
+	options = Object.assign(options, {
+		from: {
+			name: process.env.GMAIL_NAME,
+			address:process.env.GMAIL_EMAIL
+		}
+	})
+
 	return emailTransporter.sendMail(options)
 }
 

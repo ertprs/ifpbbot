@@ -27,11 +27,12 @@ function jsonParse(text, reviver, defaultValue = {}, noDefaultValue = false) {
  * Executa uma função em uma determinada data e horário
  * @param {Date} date - Data que a função será executada
  * @param {Function} fn - Função que será executada
+ * @param {Boolean} runLate - Executa a função se já tiver passado do tempo
  */
-function schedule(date, fn = () => { }) {
+function schedule(date, fn = () => { }, runLate = false) {
 	let timeLeft = date - new Date()
-	// if (timeLeft < 0) return false
-	if (timeLeft < 0) timeLeft = 0
+	if (!runLate && timeLeft < 0) return false
+	if (runLate && timeLeft < 0) timeLeft = 0
 	return setTimeout(fn, timeLeft)
 }
 

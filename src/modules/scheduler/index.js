@@ -1,7 +1,7 @@
 require('dotenv/config')
 require('module-alias/register')
 const log = require('@logger')
-const { isDisabled, schedule } = require('@helpers/helpers')
+const { isDisabled, schedule } = require('@helpers')
 const Schedule = require('@models/Schedule')
 
 /** Funções de envio de mensagens */

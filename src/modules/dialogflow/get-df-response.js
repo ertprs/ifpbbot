@@ -1,5 +1,5 @@
 const path = require('path')
-const { jsonParse, randomItem } = require('@helpers/helpers')
+const { jsonParse, randomItem } = require('@helpers')
 const log = require('@logger')
 const dialogflow = require('@google-cloud/dialogflow')
 const { value } = require('pb-util')

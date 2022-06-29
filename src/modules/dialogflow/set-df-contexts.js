@@ -1,6 +1,6 @@
 const log = require('@logger')
 const dialogflow = require('@google-cloud/dialogflow')
-const { jsonParse } = require('@helpers/helpers')
+const { jsonParse } = require('@helpers')
 const CREDENTIALS = jsonParse(process.env.GCLOUD_CREDENTIALS)
 
 /**
