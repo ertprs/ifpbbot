@@ -9,7 +9,7 @@ const log = require('@logger')
 async function makeBackup() {
 	const BACKUP_FILE_NAME = `backup-${new Date().toISOString()}.zip`
 	const BACKUP_MIME_TYPE = 'application/zip'
-	const BACKUP_PARENT_FOLDER = process.env.DRIVE_BACKUP_PARENT || []
+	const BACKUP_PARENT_FOLDER = process.env.DRIVE_BACKUP_PARENT ? [process.env.DRIVE_BACKUP_PARENT] : []
 
 	// Retorna um arquivo ZIP do agente do Dialogflow
 	const agentBuffer = await exportAgent()
