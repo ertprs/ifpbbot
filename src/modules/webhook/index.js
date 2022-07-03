@@ -4,14 +4,15 @@ const getSubjects = require('./intents/getSubjects')
 const getTeachers = require('./intents/getTeachers')
 const log = require('@logger')
 const app = require('@config/http')
+const { jsonParse } = require('@helpers')
 const express = require('express')
 const basicAuth = require('express-basic-auth')
 const router = express.Router()
 require('@config/database')
 
 if (process.env.WEBHOOK_USERS) router.use(basicAuth({
-	users: JSON.parse(process.env.WEBHOOK_USERS || '{}'),
-	unauthorizedResponse: () => 'Você não tem autorização para utilizar este servidor Webhook'
+	users: jsonParse(process.env.WEBHOOK_USERS),
+	unauthorizedResponse: () => '401 Unauthorized'
 }))
 
 router.post('/', async (req, res) => {

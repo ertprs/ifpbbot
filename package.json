@@ -44,6 +44,7 @@
     "telegraf": "^4.8.2"
   },
   "_moduleAliases": {
+    "@@": "src",
     "@config": "src/config",
     "@helpers": "src/helpers",
     "@logger": "src/config/logger",

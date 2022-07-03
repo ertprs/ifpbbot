@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR" ng-app="status">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>IFPBBot Status</title>
+	<link rel="shortcut icon" href="/favicon.png" type="image/png">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/fontawesome.all.min.css">
+</head>
+
+<body ng-controller="statusCtrl">
+	<main class="container my-4">
+		<h1 class="display-5">
+			<i class="text-success far fa-thumbs-up"></i>
+			IFPBBot Status
+		</h1>
+
+		<hr>
+
+		<section>
+			<h2 class="fw-light">
+				<i class="text-primary fas fa-puzzle-piece"></i>
+				Módulos
+			</h2>
+
+			<div class="row g-2 mt-3 my-2 fs-5 border rounded p-2" ng-if="!serverError" style="border-color: var(--bs-list-group-border-color);">
+				<div class="col col-auto mt-0" ng-switch on="globalStatus">
+					<i class="text-dark fa-fw fas fa-circle-notch fa-spin" ng-switch-when="connecting"></i>
+					<i class="text-warning fa-fw fas fa-circle-notch fa-spin" ng-switch-when="starting"></i>
+					<i class="text-success fa-fw fas fa-check" ng-switch-when="allOk"></i>
+					<i class="text-secondary fa-fw fas fa-ban" ng-switch-when="allDisabled"></i>
+					<i class="text-danger fa-fw fas fa-xmark" ng-switch-when="someErrors"></i>
+				</div>
+
+				<div class="col mt-0" ng-switch on="globalStatus">
+					<span class="text-dark" ng-switch-when="connecting">Conectando ao servidor...</span>
+					<span class="text-warning" ng-switch-when="starting">Iniciando módulos...</span>
+					<span class="text-success" ng-switch-when="allOk">Tudo funcionando corretamente</span>
+					<span class="text-secondary" ng-switch-when="allDisabled">Todos os módulos estão desabilitados</span>
+					<span class="text-danger" ng-switch-when="someErrors">Há problemas com alguns módulos do servidor</span>
+				</div>
+			</div>
+			
+			<div class="alert alert-danger mt-4" ng-if="serverError">
+				<h2 class="fw-light">Erro ao conectar ao servidor</h2>
+				<div>{{serverError.status}} {{serverError.statusText}}</div>
+				<details class="mt-3">
+					<summary>Detalhes</summary>
+					<pre ng-bind="serverError.data"></pre>
+				</details>
+			</div>
+
+			<ul class="list-group list-group-flush" ng-if="modules">
+				<li class="list-group-item" ng-repeat="module in modules">
+					<div class="row align-items-center">
+						<div class="col col-1 fs-4" ng-switch on="module.status">
+							<i class="text-success fa-fw fas fa-check" ng-switch-when="ok"></i>
+							<i class="text-warning fa-fw fas fa-circle-notch fa-spin" ng-switch-when="starting"></i>
+							<i class="text-secondary fa-fw fas fa-ban" ng-switch-when="disabled"></i>
+							<i class="text-danger fa-fw fas fa-xmark" ng-switch-when="error"></i>
+						</div>
+
+						<div class="col col-11">
+							<h4
+								class="fw-normal mb-1"
+								ng-class="{
+									ok: ['text-success'],
+									starting: ['text-warning'],
+									disabled: ['text-secondary', 'fst-italic'],
+									error: ['text-danger']
+								}[module.status]"
+								ng-bind="module.path"
+							></h4>
+							
+							<div class="fw-light" ng-switch on="module.status">
+								<span ng-switch-when="ok">Módulo funcionando corretamente</span>
+								<span ng-switch-when="starting">Iniciando...</span>
+								<span ng-switch-when="disabled" class="fst-italic">Módulo desabilitado</span>
+								<span ng-switch-when="error" class="fw-semibold text-danger">Módulo com problemas</span>
+							</div>
+
+							<div ng-if="module.status === 'error'">
+								<pre class="text-danger" ng-bind="module.error.stack"></pre>
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</section>
+	</main>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"></script>
+	<script src="js/index.js"></script>
+</body>
+</html>

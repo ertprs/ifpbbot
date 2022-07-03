@@ -1,5 +1,6 @@
 const log = require('@logger')
 const fs = require('fs')
+const { jsonParse } = require('@helpers')
 
 class LocalSessions {
 	constructor(fileName, data, saveTime = 10000) {
@@ -14,7 +15,7 @@ class LocalSessions {
 			if (!fs.existsSync(fileName)) return false
 
 			const data = fs.readFileSync(fileName, { encoding: 'UTF-8' })
-			const result = JSON.parse(data)
+			const result = jsonParse(data)
 
 			if (typeof result === 'object' && result !== null && !Array.isArray(result)) {
 				log('greenBright', 'Sessões')('Sessões do arquivo carregadas com sucesso')

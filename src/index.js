@@ -6,24 +6,20 @@ const makeBox = require('@helpers/makebox')
 const printLogo = require('@helpers/print-logo')
 const { isDisabled } = require('@helpers')
 process.on('uncaughtException', log('redBright', 'Erro não capturado'))
+const MODULES = require('./modules')
 let error = false
-
-// MÓDULOS
-const MODULES = ([
-	// Caminho do módulo; Desabilitar; Mensagem de desabilitado
-	['whatsapp', process.env.DISABLE_WHATSAPP, 'Robô do WhatsApp desativado por variável de ambiente'],
-	['telegram', process.env.DISABLE_TELEGRAM, 'Robô do Telegram desativado por variável de ambiente'],
-	['google-sheets', process.env.DISABLE_GOOGLE_SHEETS, 'Integração com Planilhas Google desativado por variável de ambiente'],
-	['webhook', process.env.DISABLE_WEBHOOK, 'Servidor webhook desativado por variável de ambiente'],
-	['scheduler', process.env.DISABLE_SCHEDULER, 'Agendador desativado por variável de ambiente'],
-	['site', process.env.DISABLE_SITE, 'Site desativado por variável de ambiente'],
-	['backup', process.env.DISABLE_BACKUP, 'Backup desativado por variável de ambiente']
-])
 
 // Limpa a tela e imprime o logo
 console.clear()
 console.log(makeBox('           IFPB ChatBot           ', chalk.yellowBright, chalk.yellow))
 printLogo()
+
+// Módulo de status do servidor
+try {
+	require('@modules/status')
+} catch (err) {
+	log('redBright', 'Erro')('Erro ao executar o módulo de status do servidor', err)
+}
 
 // Checa possíveis erros
 try {
@@ -44,14 +40,17 @@ if (!process.env.PROJECT_ID) {
 if (error) process.exit()
 
 // Inicia os módulos
-MODULES.forEach((module) => start(...module))
+MODULES.forEach(start)
 
 // Inicia um módulo
-function start(moduleName, disabled = false, disabledMessage = '') {
-	if (isDisabled(disabled)) return log('cyan', 'Aviso')(disabledMessage)
+function start(mod) {
+	const { path, disabled, disabledMessage, started, error } = mod
+	if (disabled) return log('cyan', 'Aviso')(disabledMessage)
 	try {
-		require(`./modules/${moduleName}`)
+		require(`./modules/${path}`)
+		mod.started = true
 	} catch (err) {
-		log('redBright', 'Erro')(`Erro ao executar o módulo ${moduleName}`, err)
+		log('redBright', 'Erro')(`Erro ao executar o módulo ${path}`, err)
+		mod.error = { message: err.message, stack: err.stack }
 	}
 }

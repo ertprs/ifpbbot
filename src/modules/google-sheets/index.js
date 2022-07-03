@@ -2,6 +2,7 @@ require('dotenv/config')
 require('module-alias/register')
 const log = require('@logger')
 const app = require('@config/http')
+const { jsonParse } = require('@helpers')
 const express = require('express')
 const basicAuth = require('express-basic-auth')
 const router = express.Router()
@@ -12,8 +13,8 @@ const deleteIntents = require('./delete-intents')
 const createIntents = require('./create-intents')
 
 if (process.env.GOOGLE_SHEETS_USERS) router.use(basicAuth({
-	users: JSON.parse(process.env.GOOGLE_SHEETS_USERS || '{}'),
-	unauthorizedResponse: () => 'Você não tem autorização para utilizar este servidor'
+	users: jsonParse(process.env.GOOGLE_SHEETS_USERS),
+	unauthorizedResponse: () => '401 Unauthorized'
 }))
 
 let operationsCooldown = -Infinity

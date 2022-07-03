@@ -1,9 +1,10 @@
 const log = require('@logger')
 const dialogflow = require('@google-cloud/dialogflow')
 const { value } = require('pb-util')
+const { jsonParse } = require('@helpers')
 const projectId = process.env.PROJECT_ID
 const intentsClient = new dialogflow.IntentsClient({
-	credentials: JSON.parse(process.env.GCLOUD_CREDENTIALS)
+	credentials: jsonParse(process.env.GCLOUD_CREDENTIALS)
 })
 
 /**

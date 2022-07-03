@@ -1,5 +1,6 @@
 const fs = require('fs')
 const log = require('@logger')
+const { jsonParse } = require('@helpers')
 require('@config/database')
 const Data = require('@models/Data')
 
@@ -33,7 +34,7 @@ function useRemoteAuthState(filePath = './whatsapp_auth.json') {
 		// Salva o estado no banco de dados
 		saveState() {
 			// Lê o estado do arquivo local
-			const data = JSON.parse(fs.readFileSync(filePath, { encoding: 'UTF-8' }))
+			const data = jsonParse(fs.readFileSync(filePath, { encoding: 'UTF-8' }))
 
 			// Envia o estado para o banco de dados
 			return Data.findOne({ type: 'whatsapp-state' }).then((state) => {
