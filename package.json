@@ -28,7 +28,7 @@
     "@adiwajshing/baileys": "^4.1.0",
     "@adiwajshing/keyed-db": "^0.2.4",
     "@google-cloud/dialogflow": "^4.6.0",
-    "axios": "^0.27.2",
+    "axios": "^1.1.2",
     "chalk": "^4.1.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
