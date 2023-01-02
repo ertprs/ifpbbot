@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "eslint": "^8.16.0",
+    "eslint": "^8.31.0",
     "eslint-plugin-only-warn": "^1.0.3"
   }
 }
